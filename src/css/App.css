@@ -1,0 +1,25 @@
+#root{
+    height: 100%;
+}
+html {
+    height: 100%;
+}
+body {
+    height: 100%;
+}
+.lay-out{
+    height: 100%;
+}
+
+.header-name{
+    color: #fff;
+    font-size: 20px;
+    margin-right: 4rem;
+}
+.main-content{
+    height: 100%;
+}
+.top-header{
+    display: flex;
+    align-items: center;
+}
