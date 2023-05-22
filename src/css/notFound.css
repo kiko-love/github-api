@@ -1,0 +1,13 @@
+.not-found-container{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    
+}
+.not-fount-title{
+    font-size: 30px;
+    font-weight: bold;
+    color: #c6af7c;
+}

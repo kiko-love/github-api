@@ -5,9 +5,9 @@ https://api.github.com/users/kikolove
  * 
  */
 export interface IUser {
-    Login:string;
-    id:number;
-    node_id:string;
+    login:string|undefined|null;
+    id:number|undefined|null;
+    node_id:string|undefined|null;
     avatar_url:string;
     gravatar_id:string;
     url:string;
@@ -23,14 +23,14 @@ export interface IUser {
     received_events_url:string;
     type:string;
     site_admin:boolean;
-    name:string;
-    company:string;
+    name:string|undefined|null;
+    company:string|undefined|null;
     blog:string;
-    location:string;
-    email:string;
-    hireable:string;
-    bio:string;
-    twitter_username:string;
+    location:string|undefined|null;
+    email:string|null;
+    hireable:string|null;
+    bio:string|null;
+    twitter_username:string|null|undefined;
     public_repos:number;
     public_gists:number;
     followers:number;

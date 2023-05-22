@@ -23,3 +23,29 @@ body {
     display: flex;
     align-items: center;
 }
+.sider-container{
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin-top: 8px;
+    gap: 1.5rem;
+}
+.avatar{
+
+}
+.login{
+    font-size: 20px;
+    font-weight: 500;
+    margin-top: 1rem;
+}
+.bio {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.5;
+    margin-top: 1rem;
+    text-align: left;
+    padding: 5px;
+    margin-left: 10px;
+}

@@ -6,14 +6,14 @@ import { Navigate } from "react-router-dom";
 const RouterConfig = [
   {
     path: "/",
-    element: <Navigate to="/play" />,
+    element: <Navigate to="/home" />,
   },
   {
-    path: "/play",
+    path: "/home",
     element: <Play />,
     children: [
       {
-        path: "/play/lib",
+        path: "/home/lib",
         element: <Repo />,
         // 可以传参，用于面包屑导航之类
         meta: {
