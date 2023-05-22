@@ -116,8 +116,6 @@ export interface IRepo {
 }
 
 export interface IRepoList {
-    total_count:number;
-    incomplete_results:boolean;
     items:IRepo[];
 }
 

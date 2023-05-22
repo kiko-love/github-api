@@ -8,6 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 import store from "@/store/index";
 import "@/css/App.css";
 import { setUser } from "./store/festures/userSlice";
+import { testUser } from "./api/test";
 
 const App: React.FC = () => {
   const { Header, Content } = Layout;
@@ -18,12 +19,7 @@ const App: React.FC = () => {
   const onSearch = async (value: string) => {
     if (value === "") return false;
     // const res = await getUser(value);
-    const res = {
-      login: "test",
-      id: 1,
-      node_id: "test",
-      avatar_url: "test",
-    }
+    const res = testUser
     console.log(res);
     dispatch(setUser({res}))
   };
@@ -36,7 +32,7 @@ const App: React.FC = () => {
             placeholder="搜索贡献者ID"
             onSearch={onSearch}
             allowClear
-            style={{ width: 200 }}
+            style={{ width: 260 }}
           />
         </div>
        

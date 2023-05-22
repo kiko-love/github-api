@@ -1,0 +1,14 @@
+.vcard-details{
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 10px;
+}
+.vcard-item{
+    display: flex;
+    gap: 5px;
+}
+.vcard-text{
+    font-size:12px;
+
+}

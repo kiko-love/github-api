@@ -1,51 +1,66 @@
-#root{
-    height: 100%;
+#root {
+  height: 100%;
 }
 html {
-    height: 100%;
+  height: 100%;
 }
 body {
-    height: 100%;
+  height: 100%;
 }
-.lay-out{
-    height: 100%;
+/* 修改滚动条样式 */
+::-webkit-scrollbar {
+  width: 6px; /* 滚动条宽度 */
+  background-color: #dddddd; /* 滚动条背景色 */
 }
 
-.header-name{
-    color: #fff;
-    font-size: 20px;
-    margin-right: 4rem;
+/* 修改滑块样式 */
+::-webkit-scrollbar-thumb {
+  background-color: #909090; /* 滑块背景色 */
+  border-radius: 5px; /* 滑块圆角 */
 }
-.main-content{
-    height: 100%;
-}
-.top-header{
-    display: flex;
-    align-items: center;
-}
-.sider-container{
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    margin-top: 8px;
-    gap: 1.5rem;
-}
-.avatar{
 
+.lay-out {
+  height: 100%;
 }
-.login{
-    font-size: 20px;
-    font-weight: 500;
-    margin-top: 1rem;
+
+.header-name {
+  color: #fff;
+  font-size: 20px;
+  margin-right: 4rem;
+}
+.main-content {
+  height: 100%;
+}
+.top-header {
+  display: flex;
+  align-items: center;
+}
+.sider-container {
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  margin-top: 8px;
+  gap: 1.5rem;
+}
+.home-content {
+  overflow: hidden;
+}
+.avatar {
+}
+.login {
+  font-size: 20px;
+  font-weight: 500;
+  margin-top: 1rem;
 }
 .bio {
-    font-size: 14px;
-    font-weight: 400;
-    line-height: 1.5;
-    margin-top: 1rem;
-    text-align: left;
-    padding: 5px;
-    margin-left: 10px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+  margin-top: 1rem;
+  text-align: left;
+  padding: 5px;
+  margin: 0 10px;
+  border-bottom: 1px dashed #fff;
 }

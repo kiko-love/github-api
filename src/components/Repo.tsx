@@ -1,9 +1,14 @@
 import React from "react";
+import RepoCard from "./repoCard";
+import { testRepo } from "@/api/test";
+import "@/components/css/Repo.css";
 
-class Repo extends React.Component {
-  render() {
-    return <div>MusicLib</div>;
-  }
+export default function Repo() {
+  return (
+    <div className="repoList">
+      {testRepo?.map((item, index) => {
+        return <RepoCard key={index} {...item} />;
+      })}
+    </div>
+  );
 }
-
-export default Repo;
