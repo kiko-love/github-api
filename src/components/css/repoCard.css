@@ -1,12 +1,13 @@
 .repoCard{
     display: flex;
-    flex-direction: column;
+    /* flex-direction: column; */
+    justify-content: space-between;
     padding: 1rem 1.5rem;
     border: 1px solid #e1e4e8;
     box-shadow: 0 1px 6px rgba(0,0,0,0.04);
     margin: 1rem;
     border-radius: 5px;
-    cursor: pointer;
+    /* cursor: pointer; */
     transition: all 0.15s ease-in-out;
 }
 .repoCard:hover {
@@ -67,4 +68,9 @@
     display: flex;
     align-items: center;
     gap: 2px;
+}
+.repoCard-action{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
 }
