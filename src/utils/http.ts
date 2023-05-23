@@ -18,6 +18,8 @@ let axiosInstance: AxiosInstance = axios.create({
   headers: {
     Accept: "application/json",
     "Content-Type": "application/x-www-form-urlencoded",
+    // eslint-disable-next-line no-useless-concat
+    "Authorization":"token "+"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"
   },
   transformRequest: [
     function (data) {
