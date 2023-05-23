@@ -48,7 +48,7 @@ export interface IRepo {
     name:string;
     full_name:string;
     private:boolean;
-    owner:IUser;
+    owner:IUser|null;
     html_url:string;
     description:string;
     fork:boolean;
@@ -120,6 +120,24 @@ export interface IRepo {
 
 export interface IRepoList {
     items:IRepo[];
+}
+export interface IFile {
+    name:string;
+    path:string;
+    sha:string;
+    size:number;
+    url:string;
+    html_url:string;
+    git_url:string;
+    download_url:string;
+    type:string;
+    content:string;
+    encoding:string;
+    _links:{
+        self:string;
+        git:string;
+        html:string;
+    }
 }
 
 export interface IRepoParams {

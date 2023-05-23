@@ -2,6 +2,7 @@
 import NotFound from "@/components/NotFound";
 import Play from "@/components/Play";
 import Repo from "@/components/Repo";
+import RepoDeatils from "@/views/repoDeatils";
 import { Navigate } from "react-router-dom";
 const RouterConfig = [
   {
@@ -19,6 +20,14 @@ const RouterConfig = [
       {
         path: "/home/repo",
         element: <Repo />,
+        // 可以传参，用于面包屑导航之类
+        meta: {
+          id: 1,
+        },
+      },
+      {
+        path: "/home/repoDetail/:name",
+        element: <RepoDeatils />,
         // 可以传参，用于面包屑导航之类
         meta: {
           id: 1,
