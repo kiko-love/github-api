@@ -2,7 +2,7 @@ import { IUser } from "@/model/IGithub";
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState: IUser = {
-  login: "user",
+  login: "",
   id: 0,
   node_id: "",
   avatar_url: "",
@@ -41,7 +41,7 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     setUser: (state, { payload }) => {
-      Object.assign(state, payload.res);
+      Object.assign(state, payload.user);
       console.log("state", state.avatar_url);
     },
   },

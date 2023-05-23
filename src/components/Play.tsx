@@ -1,6 +1,7 @@
 import React from "react";
 import { Outlet } from "react-router-dom";
 import { Layout, Avatar } from "antd";
+import { UserOutlined } from "@ant-design/icons";
 import { useSelector, useDispatch } from "react-redux";
 import { testUser } from "@/api/test";
 import CardDetails from "@/components/cardDetails";
@@ -14,21 +15,34 @@ const Play: React.FC = () => {
     <Layout className="lay-out">
       <Sider>
         <div className="sider-container">
-          <Avatar
-            className="avatar"
-            style={{
-              backgroundColor: "#fff",
-              color: "#000",
-              verticalAlign: "middle",
-            }}
-            size={160}
-            src={testUser.avatar_url}
-          >
-            {state.login}
-          </Avatar>
-          <div className="login">{testUser.login}</div>
-          <div className="bio">{testUser.bio}</div>
-          <CardDetails {...testUser} />
+          {state.avatar_url && (
+            <Avatar
+              className="avatar"
+              style={{
+                backgroundColor: "#fff",
+                color: "#000",
+                verticalAlign: "middle",
+              }}
+              icon={<UserOutlined />}
+              size={160}
+              src={state.avatar_url}
+            ></Avatar>
+          )}
+          {!state.avatar_url && (
+            <Avatar
+              className="avatar"
+              style={{
+                backgroundColor: "#fff",
+                color: "#000",
+                verticalAlign: "middle",
+              }}
+              icon={<UserOutlined />}
+              size={160}
+            ></Avatar>
+          )}
+          <div className="login">{state.login}</div>
+          <div className="bio">{state.bio}</div>
+          <CardDetails {...state} />
         </div>
       </Sider>
       <Content className="home-content">

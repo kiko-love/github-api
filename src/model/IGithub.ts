@@ -1,6 +1,9 @@
 /*
 https://api.github.com/users/kikolove
 */
+
+import { ReactNode } from "react";
+
 /**
  * 
  */
@@ -8,7 +11,7 @@ export interface IUser {
     login:string|undefined|null;
     id:number|undefined|null;
     node_id:string|undefined|null;
-    avatar_url:string;
+    avatar_url:string|ReactNode;
     gravatar_id:string;
     url:string;
     html_url:string;

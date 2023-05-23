@@ -3,25 +3,27 @@ import "normalize.css";
 import { useRoutes } from "react-router-dom";
 import { Layout, Input } from "antd";
 import RouterConfig from "@/routers/index";
-import { getUser } from "@/api/api";
-import { useSelector, useDispatch } from "react-redux";
-import store from "@/store/index";
+import { useDispatch,useSelector } from "react-redux";
 import "@/css/App.css";
 import { setUser } from "./store/festures/userSlice";
-import { testUser } from "./api/test";
+import { setRepoList } from "./store/festures/repoListSlice";
+import { testUser, testRepo } from "./api/test";
 
 const App: React.FC = () => {
   const { Header, Content } = Layout;
-  
-  const state = useSelector((store: any) => store.user);
   const dispatch = useDispatch();
   const { Search } = Input;
+  const user = useSelector((store: any) => store.user);
+    const repoList = useSelector((store: any) => store.repoList);
   const onSearch = async (value: string) => {
     if (value === "") return false;
     // const res = await getUser(value);
-    const res = testUser
-    console.log(res);
-    dispatch(setUser({res}))
+    const user = testUser;
+    const repoList = testRepo;
+    
+    Promise.all([dispatch(setUser({ user })), dispatch(setRepoList({ repoList }))]);
+    console.log(user, repoList);
+    
   };
   return (
     <Layout className="lay-out">
@@ -35,7 +37,6 @@ const App: React.FC = () => {
             style={{ width: 260 }}
           />
         </div>
-       
       </Header>
       <Content className="main-content">{useRoutes(RouterConfig)}</Content>
     </Layout>
