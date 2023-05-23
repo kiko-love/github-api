@@ -1,30 +1,41 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "antd";
 import {
   ArrowLeftOutlined,
   CodeOutlined,
-  FolderOutlined,
+  FolderFilled,
   FileOutlined,
 } from "@ant-design/icons";
 import { testRepoContent } from "@/api/test";
 import { useDispatch, useSelector } from "react-redux";
 import { setRepo } from "@/store/festures/repoSlice";
 import { formatFileSize } from "@/utils/file";
+import { getRepoContents } from "@/api/api";
 import "@/css/repoDetails.css";
+import { getRepoDetail } from "../api/api";
 
 const RepoDeatils: React.FC = () => {
-  const fileList = testRepoContent;
-  const repoState = useSelector((store: any) => store.repo);
-  const dispatch = useDispatch();
-  dispatch(setRepo({ fileList }));
+  const user = useSelector((store: any) => store.user);
+  const [data, setData] = useState([]);
+
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const navigate = useNavigate();
   const { name } = useParams();
-  const files = repoState.fileList.filter((item: any) => item.type === "file");
-  const dirs = repoState.fileList.filter((item: any) => item.type === "dir");
+  useEffect(() => {
+    const fetchData = async () => {
+      if (user.login && name) {
+        const res = await getRepoContents(user.login, name as string);
+        console.log(res);
+        setData(res);
+      }
+    };
+    fetchData();
+  }, []);
+  const files = data.filter((item: any) => item.type === "file");
+  const dirs = data.filter((item: any) => item.type === "dir");
+
   console.log(name);
-  console.log(repoState);
 
   const back = () => {
     navigate(`/home/repo`);
@@ -63,7 +74,7 @@ const RepoDeatils: React.FC = () => {
               return (
                 <div key={index} className="repo-d-content-item item-dir">
                   <span>
-                    <FolderOutlined />
+                    <FolderFilled />
                   </span>
                   <span>{item.name}</span>
                 </div>

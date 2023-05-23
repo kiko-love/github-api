@@ -2,10 +2,8 @@ import React from "react";
 import { Outlet } from "react-router-dom";
 import { Layout, Avatar } from "antd";
 import { UserOutlined } from "@ant-design/icons";
-import { useSelector, useDispatch } from "react-redux";
-import { testUser } from "@/api/test";
+import { useSelector } from "react-redux";
 import CardDetails from "@/components/cardDetails";
-import store from "@/store/index";
 import "@/css/App.css";
 const { Sider, Content } = Layout;
 

@@ -10,7 +10,6 @@ export const repoSlice = createSlice({
   initialState,
   reducers: {
     setRepo: (state, { payload }) => {
-      console.log("setRepo", payload);
       state.fileList = payload.fileList;
     },
   },

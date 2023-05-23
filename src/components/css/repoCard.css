@@ -30,6 +30,8 @@
     font-size: 14px;
     color: #6b7178;
     margin-bottom: 1rem;
+    margin-right: 1rem;
+    line-height: 22px;
 }
 .language-dot{
     width: 8px;
@@ -54,6 +56,11 @@
     gap: 1rem;
 }
 .repoCard-license{
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.repoCard-date{
     display: flex;
     align-items: center;
     gap: 4px;

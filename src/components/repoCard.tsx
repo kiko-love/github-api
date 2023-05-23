@@ -7,8 +7,10 @@ import {
   StarOutlined,
   BranchesOutlined,
   RightOutlined,
+  HistoryOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import dayjs from "dayjs";
 
 const repoCard: React.FC = (prpos: any) => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -67,6 +69,13 @@ const repoCard: React.FC = (prpos: any) => {
               <span>{prpos.license?.name}</span>
             </div>
           )}
+          {
+            <div className="repoCard-date">
+              <HistoryOutlined />
+              <span>创建日期</span>
+              <span>{dayjs(prpos.created_at).format("YYYY年MM月DD日")}</span>
+            </div>
+          }
         </div>
       </div>
       <div className="repoCard-action">

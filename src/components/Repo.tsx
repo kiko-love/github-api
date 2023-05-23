@@ -1,8 +1,7 @@
 import React from "react";
 import RepoCard from "./repoCard";
-import { testRepo } from "@/api/test";
 import { useSelector } from "react-redux";
-import { Empty } from "antd";
+import { Empty  } from "antd";
 import "@/components/css/Repo.css";
 
 export default function Repo() {

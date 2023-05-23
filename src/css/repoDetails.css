@@ -8,7 +8,7 @@
   width: 100%;
   display: flex;
   align-items: baseline;
-  padding: .5rem 1rem;
+  padding: 0.5rem 1rem;
   border-bottom: 1px solid #e1e4e8;
   box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
   background: #fff;
@@ -46,25 +46,25 @@
   gap: 5px;
   padding: 0.5rem;
   border-radius: 5px;
-  transition: all 0.15s;
+  font-size: 16px;
+  transition: all 0.1s;
   cursor: pointer;
 }
 .repo-d-content-item:hover {
   background: #e1e4e8;
   transition: all 0.15s ease-in-out;
+  color: #0366d6;
 }
 .repo-d-tip {
-  font-size: 16px;
+  font-size: 15px;
   display: flex;
   gap: 0.3125rem;
   align-items: center;
 }
 .item-dir {
-  font-size: 14px;
   font-weight: 600;
 }
 .item-file {
-  font-size: 14px;
   display: flex;
   justify-content: space-between;
 }
