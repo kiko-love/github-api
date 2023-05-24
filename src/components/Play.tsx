@@ -39,7 +39,7 @@ const Play: React.FC = () => {
             ></Avatar>
           )}
           <div className="login">{state.login?state.login:'<any>'}</div>
-          <div className="bio">{state.bio?state.bio:'请先获取用户信息'}</div>
+          <div className={state.bio?'bio':''}>{state.bio}</div>
           <CardDetails {...state} />
         </div>
       </Sider>
