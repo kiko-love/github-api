@@ -24,6 +24,8 @@ const RepoDeatils: React.FC = () => {
   const [data, setData] = useState([]);
   const [lang, setLang] = useState<any>({});
   const [langLen, setLangLen] = useState(0);
+  const [dirs, setDirs] = useState([]);
+  const [files, setFiles] = useState([]);
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const navigate = useNavigate();
@@ -35,7 +37,7 @@ const RepoDeatils: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (user.login && name) {
-        const [res, lang] = await Promise.all([
+        const [data, lang] = await Promise.all([
           getRepoContents(user.login, name as string),
           getRepoLanguages(user.login, name as string),
         ]);
@@ -46,16 +48,16 @@ const RepoDeatils: React.FC = () => {
         }
         setLangLen(langLen);
         setLang(lang);
-        console.log(res);
+        console.log(data);
         console.log(lang);
-        setData(res);
+        setData(data);
+        setFiles(data.filter((item: any) => item.type === "file"));
+        setDirs(data.filter((item: any) => item.type === "dir"));
       }
     };
     fetchData();
   }, []);
 
-  let files = data.filter((item: any) => item.type === "file");
-  let dirs = data.filter((item: any) => item.type === "dir");
   const back = () => {
     navigate(`/home/repo`);
   };
@@ -97,7 +99,9 @@ const RepoDeatils: React.FC = () => {
                   <span style={{ marginRight: "8px" }}>上次提交日期</span>
                   <span style={{ color: "#7a7a7a" }}>
                     {thisList
-                      ? dayjs(thisList?.pushed_at).format("YYYY年MM月DD日 hh:mm")
+                      ? dayjs(thisList?.pushed_at).format(
+                          "YYYY年MM月DD日 hh:mm"
+                        )
                       : "--"}
                   </span>
                 </div>
@@ -126,11 +130,11 @@ const RepoDeatils: React.FC = () => {
                 </div>
               </div>
               <div>
-                {
-                  Object.keys(lang).length > 0 && (
-                    <div style={{ margin: "1rem 0",fontWeight:600 }}>项目语言</div>
-                  )
-                }
+                {Object.keys(lang).length > 0 && (
+                  <div style={{ margin: "1rem 0", fontWeight: 600 }}>
+                    项目语言
+                  </div>
+                )}
                 <div className="repo-d-content-lang">
                   {Object.keys(lang).map((item: any, index: number) => {
                     const len = (Number(lang[item]) / langLen) * 100;
@@ -167,8 +171,12 @@ const RepoDeatils: React.FC = () => {
               </div>
               {thisList?.description && (
                 <div>
-                  <div style={{ margin: "1rem 0",fontWeight:600 }}>项目介绍</div>
-                  <div style={{ color: "#586069" }} className="content-des">{thisList?.description}</div>
+                  <div style={{ margin: "1rem 0", fontWeight: 600 }}>
+                    项目介绍
+                  </div>
+                  <div style={{ color: "#586069" }} className="content-des">
+                    {thisList?.description}
+                  </div>
                 </div>
               )}
             </div>
