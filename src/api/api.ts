@@ -133,6 +133,10 @@ export const getRepoCommits = async (
 
 /**
  * 获取仓库提交详情
+ * @param login
+ * @param repo
+ * @param sha
+ * @returns
  */
 export const getRepoCommitDetail = async (
   login: string,
@@ -148,6 +152,9 @@ export const getRepoCommitDetail = async (
 
 /**
  * 获取Readme
+ * @param login
+ * @param repo
+ * @returns
  */
 export const getRepoReadme = async (
   login: string,
