@@ -47,7 +47,6 @@
   gap: 5px;
   padding: 0.5rem;
   border-radius: 5px;
-  font-size: 16px;
   transition: all 0.1s;
   cursor: pointer;
 }
@@ -57,9 +56,9 @@
   color: #0366d6;
 }
 .repo-d-tip {
-  font-size: 15px;
+  font-size: 20px;
   display: flex;
-  gap: 0.3125rem;
+  gap: 0.5rem;
   align-items: center;
 }
 .item-dir {
