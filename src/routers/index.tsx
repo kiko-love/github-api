@@ -26,7 +26,7 @@ const RouterConfig = [
         },
       },
       {
-        path: "/home/repoDetail/:name",
+        path: "/home/repoDetail/:name/:index",
         element: <RepoDeatils />,
         // 可以传参，用于面包屑导航之类
         meta: {

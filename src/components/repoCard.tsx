@@ -15,8 +15,8 @@ import dayjs from "dayjs";
 const repoCard: React.FC = (prpos: any) => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const navigate = useNavigate();
-  const toDeatil = (name: string) => {
-    navigate(`/home/repoDetail/${name}`);
+  const toDeatil = (name: string, index: number) => {
+    navigate(`/home/repoDetail/${name}/${index}`);
   };
   return (
     <div className="repoCard">
@@ -72,20 +72,20 @@ const repoCard: React.FC = (prpos: any) => {
           {
             <div className="repoCard-date">
               <HistoryOutlined />
-              <span>创建日期</span>
+              {/* <span>创建日期</span> */}
               <span>{dayjs(prpos.created_at).format("YYYY年MM月DD日")}</span>
             </div>
           }
         </div>
       </div>
       <div className="repoCard-action">
-        <Tooltip title="项目详情">
+        <Tooltip title="仓库详情">
           <Button
             type="text"
             shape="circle"
             icon={<RightOutlined />}
             onClick={() => {
-              toDeatil(prpos.name);
+              toDeatil(prpos.name, prpos.index);
             }}
           />
         </Tooltip>

@@ -38,8 +38,8 @@ const Play: React.FC = () => {
               size={160}
             ></Avatar>
           )}
-          <div className="login">{state.login}</div>
-          <div className="bio">{state.bio}</div>
+          <div className="login">{state.login?state.login:'<any>'}</div>
+          <div className="bio">{state.bio?state.bio:'请先获取用户信息'}</div>
           <CardDetails {...state} />
         </div>
       </Sider>

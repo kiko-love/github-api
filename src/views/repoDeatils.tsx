@@ -1,42 +1,61 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button } from "antd";
+import { Button, Skeleton, Progress } from "antd";
 import {
   ArrowLeftOutlined,
   CodeOutlined,
   FolderFilled,
   FileOutlined,
+  ProjectOutlined,
+  StarOutlined,
+  EyeOutlined,
+  BranchesOutlined,
 } from "@ant-design/icons";
-import { testRepoContent } from "@/api/test";
-import { useDispatch, useSelector } from "react-redux";
-import { setRepo } from "@/store/festures/repoSlice";
+import { useSelector } from "react-redux";
 import { formatFileSize } from "@/utils/file";
-import { getRepoContents } from "@/api/api";
+import { getRepoContents, getRepoLanguages } from "@/api/api";
+import dayjs from "dayjs";
+import { getLanguageColor } from "@/utils/color";
 import "@/css/repoDetails.css";
-import { getRepoDetail } from "../api/api";
 
 const RepoDeatils: React.FC = () => {
   const user = useSelector((store: any) => store.user);
+  const repoList = useSelector((store: any) => store.repoList);
   const [data, setData] = useState([]);
+  const [lang, setLang] = useState<any>({});
+  const [langLen, setLangLen] = useState(0);
 
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const navigate = useNavigate();
-  const { name } = useParams();
+  const { name, index } = useParams();
+  const thisList = repoList.items[Number(index)];
+  console.log(thisList);
+
+  // 依赖项是一个空数组 [] 时 , effect 只在第一次渲染的时候执行
   useEffect(() => {
     const fetchData = async () => {
       if (user.login && name) {
-        const res = await getRepoContents(user.login, name as string);
+        const [res, lang] = await Promise.all([
+          getRepoContents(user.login, name as string),
+          getRepoLanguages(user.login, name as string),
+        ]);
+        let langLen = 0;
+        for (let i in lang) {
+          // eslint-disable-next-line react-hooks/exhaustive-deps
+          langLen += lang[i];
+        }
+        setLangLen(langLen);
+        setLang(lang);
         console.log(res);
+        console.log(lang);
         setData(res);
       }
     };
     fetchData();
   }, []);
-  const files = data.filter((item: any) => item.type === "file");
-  const dirs = data.filter((item: any) => item.type === "dir");
 
-  console.log(name);
-
+  let files = data.filter((item: any) => item.type === "file");
+  let dirs = data.filter((item: any) => item.type === "dir");
   const back = () => {
     navigate(`/home/repo`);
   };
@@ -52,12 +71,107 @@ const RepoDeatils: React.FC = () => {
         >
           返回仓库列表
         </Button>
-        <div className="repo-d-title">{name}</div>
+        <div className="repo-d-title">{thisList?.full_name}</div>
         <div></div>
       </div>
       <div>
         <div className="repo-d-content">
           <div className="repo-d-content-header">
+            <span className="repo-d-tip">
+              <ProjectOutlined />
+              {name}
+            </span>
+            <div className="repo-d-content-info">
+              <div className="repo-d-content-grid">
+                <div>
+                  <span style={{ marginRight: "8px" }}>仓库创建日期</span>
+                  <span style={{ color: "#7a7a7a" }}>
+                    {thisList
+                      ? dayjs(thisList?.created_at).format(
+                          "YYYY年MM月DD日 hh:mm"
+                        )
+                      : "--"}
+                  </span>
+                </div>
+                <div>
+                  <span style={{ marginRight: "8px" }}>上次提交日期</span>
+                  <span style={{ color: "#7a7a7a" }}>
+                    {thisList
+                      ? dayjs(thisList?.pushed_at).format("YYYY年MM月DD日 hh:mm")
+                      : "--"}
+                  </span>
+                </div>
+              </div>
+              <div className="repo-d-content-counts">
+                <div className="repo-d-content-count">
+                  <div className="count-tip">
+                    <StarOutlined />
+                    <span>{thisList?.stargazers_count}</span>
+                  </div>
+                  <span className="count-unit">star</span>
+                </div>
+                <div className="repo-d-content-count">
+                  <div className="count-tip">
+                    <EyeOutlined />
+                    <span>{thisList?.watchers_count}</span>
+                  </div>
+                  <span className="count-unit">watching</span>
+                </div>
+                <div className="repo-d-content-count">
+                  <div className="count-tip">
+                    <BranchesOutlined />
+                    <span>{thisList?.forks_count}</span>
+                  </div>
+                  <span className="count-unit">forks</span>
+                </div>
+              </div>
+              <div>
+                {
+                  Object.keys(lang).length > 0 && (
+                    <div style={{ margin: "1rem 0",fontWeight:600 }}>项目语言</div>
+                  )
+                }
+                <div className="repo-d-content-lang">
+                  {Object.keys(lang).map((item: any, index: number) => {
+                    const len = (Number(lang[item]) / langLen) * 100;
+                    return len > 1 ? (
+                      <div
+                        key={index}
+                        className="repo-d-content-lang-item"
+                        style={{
+                          width: `${len}%`,
+                          background: `${getLanguageColor(item)}`,
+                        }}
+                      ></div>
+                    ) : (
+                      <></>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="repo-d-content-lang-names">
+                {Object.keys(lang).map((item: any, index: number) => {
+                  const len = (Number(lang[item]) / langLen) * 100;
+                  return (
+                    <div key={index} className="repo-d-content-lang-name">
+                      <span
+                        className="lang-dot"
+                        style={{ background: `${getLanguageColor(item)}` }}
+                      ></span>
+                      <span className="lang-name">{item}</span>
+                      <span className="lang-progress">{len.toFixed(2)}%</span>
+                    </div>
+                  );
+                })}
+              </div>
+              {thisList?.description && (
+                <div>
+                  <div style={{ margin: "1rem 0",fontWeight:600 }}>项目介绍</div>
+                  <div style={{ color: "#586069" }} className="content-des">{thisList?.description}</div>
+                </div>
+              )}
+            </div>
             <div className="repo-d-content-header-name">
               <span className="repo-d-tip">
                 <CodeOutlined />
@@ -93,6 +207,7 @@ const RepoDeatils: React.FC = () => {
                 </div>
               );
             })}
+            {dirs.length === 0 && files.length === 0 && <Skeleton active />}
           </div>
         </div>
       </div>

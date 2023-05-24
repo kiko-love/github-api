@@ -10,7 +10,7 @@
   align-items: baseline;
   padding: 0.5rem 1rem;
   border-bottom: 1px solid #e1e4e8;
-  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04);
+  /* box-shadow: 0 1px 6px rgba(0, 0, 0, 0.04); */
   background: #fff;
 }
 .repo-d-title {
@@ -39,6 +39,7 @@
   border-radius: 5px;
   margin-bottom: 5px;
   padding: 1rem;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
 }
 .repo-d-content-item {
   display: flex;
@@ -73,4 +74,91 @@
   justify-content: space-between;
   padding: 5px;
   border-bottom: 1px solid #dedede;
+}
+.repo-d-content-info{
+  padding: 1rem;
+  background: #eeeeee;
+  width: 100%;
+  margin: 1rem;
+  border-radius: 5px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+}
+.repo-d-content-grid{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.repo-d-content-lang{
+  width: 100%;
+  height: 8px;
+  background: transparent;
+  border-radius: 5px;
+  position: relative;
+  display: flex;
+  gap: 2px;
+  /* overflow: hidden; */
+}
+.repo-d-content-lang-item{
+  height: 8px;
+  border-radius: 5px;
+  outline: 2px solid #0000;
+}
+.repo-d-content-lang-names{
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  font-size: 12px;
+  margin: 2rem 1rem;
+}
+.repo-d-content-lang-name{
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.lang-dot{
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 4px;
+}
+.lang-name {
+  font-size: 12px;
+  color: #586069;
+  font-weight: 600;
+}
+.lang-progress {
+  color: #656d76;
+}
+.repo-d-content-counts{
+  display: flex;
+  gap: 1rem;
+}
+.repo-d-content-count{
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: #eeeeee;
+  width: 100%;
+  margin: 1rem;
+  border-radius: 5px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+}
+.count-unit{
+  color: #586069;
+  font-weight: 600;
+}
+.count-tip{
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+.content-des{
+  font-size: 14px;
+  color: #586069;
+  margin-bottom: 1rem;
+  margin-right: 1rem;
+  line-height: 22px;
 }
