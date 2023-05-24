@@ -20,7 +20,7 @@ export const getLanguageColor = (language: string): string => {
     "Swift": "#ffac45",
     "Objective-C": "#438eff",
     "Go": "#00add8",
-    "Vue": "#2c3e50",
+    "Vue": "#41b883",
     "Scala": "#c22d40",
     "Kotlin": "#f18e33",
     "Rust": "#dea584",
