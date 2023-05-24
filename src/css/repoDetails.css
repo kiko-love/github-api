@@ -56,10 +56,11 @@
   color: #0366d6;
 }
 .repo-d-tip {
-  font-size: 20px;
+  font-size: 18px;
   display: flex;
   gap: 0.5rem;
   align-items: center;
+  color: #586069;
 }
 .item-dir {
   font-weight: 600;

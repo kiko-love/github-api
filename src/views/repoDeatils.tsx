@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button, Skeleton, Progress } from "antd";
+import { Button, Skeleton, message, Spin } from "antd";
 import {
   ArrowLeftOutlined,
   CodeOutlined,
@@ -13,7 +13,7 @@ import {
 } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { formatFileSize } from "@/utils/file";
-import { getRepoContents, getRepoLanguages } from "@/api/api";
+import { getRepoContents, getRepoLanguages, getRepoContents2 } from "@/api/api";
 import dayjs from "dayjs";
 import { getLanguageColor } from "@/utils/color";
 import "@/css/repoDetails.css";
@@ -26,12 +26,46 @@ const RepoDeatils: React.FC = () => {
   const [langLen, setLangLen] = useState(0);
   const [dirs, setDirs] = useState([]);
   const [files, setFiles] = useState([]);
-
+  const [isChild, setIsChild] = useState(false);
+  const [spinning, setSpinning] = useState(false);
   // eslint-disable-next-line react-hooks/rules-of-hooks
   const navigate = useNavigate();
   const { name, index } = useParams();
+  // setParent(name);
   const thisList = repoList.items[Number(index)];
-  console.log(thisList);
+  const getChild = (name: string, type: string) => {
+    return async () => {
+      if (type === "file") {
+        message.error("该文件不是文件夹");
+        return;
+      } else {
+        setSpinning(true);
+        const data = await getRepoContents2(user.login, thisList.name, name);
+        if (data.length) {
+          setDirs(data.filter((item: any) => item.type === "dir"));
+          setFiles(data.filter((item: any) => item.type === "file"));
+          setIsChild(true);
+        } else {
+          message.error("该文件夹为空");
+        }
+        setSpinning(false);
+      }
+    };
+  };
+  const getParent = (name: string) => {
+    return async () => {
+      setSpinning(true);
+      const data = await getRepoContents(user.login, thisList.name);
+      if (data.length) {
+        setDirs(data.filter((item: any) => item.type === "dir"));
+        setFiles(data.filter((item: any) => item.type === "file"));
+      } else {
+        message.error("该文件夹为空");
+      }
+      setIsChild(false);
+      setSpinning(false);
+    };
+  };
 
   // 依赖项是一个空数组 [] 时 , effect 只在第一次渲染的时候执行
   useEffect(() => {
@@ -48,8 +82,6 @@ const RepoDeatils: React.FC = () => {
         }
         setLangLen(langLen);
         setLang(lang);
-        console.log(data);
-        console.log(lang);
         setData(data);
         setFiles(data.filter((item: any) => item.type === "file"));
         setDirs(data.filter((item: any) => item.type === "dir"));
@@ -187,36 +219,58 @@ const RepoDeatils: React.FC = () => {
               </span>
             </div>
           </div>
-          <div className="repo-d-content-list">
-            <div className="repo-d-content-tip">
-              <span>文件名</span>
-              <span>文件大小</span>
-            </div>
-            {dirs?.map((item: any, index: number) => {
-              return (
-                <div key={index} className="repo-d-content-item item-dir">
+          <Spin tip="目录加载中..." size="small" spinning={spinning}>
+            <div className="repo-d-content-list">
+              <div className="repo-d-content-tip">
+                <span>文件名</span>
+                <span>文件大小</span>
+              </div>
+              {isChild && (
+                <div
+                  style={{ color: "#7f8c8d" }}
+                  className="repo-d-content-item item-dir"
+                  onClick={getParent(thisList.name)}
+                >
                   <span>
                     <FolderFilled />
                   </span>
-                  <span>{item.name}</span>
+                  <span>返回根目录</span>
                 </div>
-              );
-            })}
-            {files?.map((item: any, index: number) => {
-              return (
-                <div key={index} className="repo-d-content-item item-file">
-                  <span>
-                    <span style={{ marginRight: "5px" }}>
-                      <FileOutlined />
+              )}
+              {dirs?.map((item: any, index: number) => {
+                return (
+                  <div
+                    key={index}
+                    className="repo-d-content-item item-dir"
+                    onClick={getChild(item.path, item.type)}
+                  >
+                    <span>
+                      <FolderFilled />
                     </span>
                     <span>{item.name}</span>
-                  </span>
-                  <span>{formatFileSize(item.size)}</span>
-                </div>
-              );
-            })}
-            {dirs.length === 0 && files.length === 0 && <Skeleton active />}
-          </div>
+                  </div>
+                );
+              })}
+              {files?.map((item: any, index: number) => {
+                return (
+                  <div
+                    key={index}
+                    className="repo-d-content-item item-file"
+                    onClick={getChild(item.name, item.type)}
+                  >
+                    <span>
+                      <span style={{ marginRight: "5px" }}>
+                        <FileOutlined />
+                      </span>
+                      <span>{item.name}</span>
+                    </span>
+                    <span>{formatFileSize(item.size)}</span>
+                  </div>
+                );
+              })}
+              {dirs.length === 0 && files.length === 0 && <Skeleton active />}
+            </div>
+          </Spin>
         </div>
       </div>
     </div>
