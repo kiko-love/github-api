@@ -55,7 +55,7 @@ const App: React.FC = () => {
         content: "搜索成功",
       });
     } catch (error: any) {
-      message.error(error.message);
+      message.error(error.message+'：未找到该用户');
     } finally {
       setLoading(false);
     }
@@ -72,7 +72,7 @@ const App: React.FC = () => {
             style={{ width: 260 }}
             loading={loading}
             suffix={
-              <Tooltip title="搜索自动获取该用户所有public仓库">
+              <Tooltip title="搜索将自动获取该用户所有public仓库">
                 <InfoCircleOutlined style={{ color: "rgba(0,0,0,.45)" }} />
               </Tooltip>
             }
