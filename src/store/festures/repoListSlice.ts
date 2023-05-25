@@ -10,8 +10,6 @@ export const repoListSlice = createSlice({
     initialState,
     reducers: {
         setRepoList: (state, { payload }) => {
-            console.log('setRepoList', payload);
-            
             state.items = payload.repoList;
         }
     }
