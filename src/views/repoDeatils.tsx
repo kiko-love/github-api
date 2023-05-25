@@ -19,8 +19,12 @@ import { getLanguageColor } from "@/utils/color";
 import "@/css/repoDetails.css";
 
 const RepoDeatils: React.FC = () => {
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const navigate = useNavigate();
   const user = useSelector((store: any) => store.user);
   const repoList = useSelector((store: any) => store.repoList);
+  const { name, index } = useParams();
+  const thisList = repoList.items[Number(index)];
   const [data, setData] = useState([]);
   const [lang, setLang] = useState<any>({});
   const [langLen, setLangLen] = useState(0);
@@ -28,19 +32,19 @@ const RepoDeatils: React.FC = () => {
   const [files, setFiles] = useState([]);
   const [isChild, setIsChild] = useState(false);
   const [spinning, setSpinning] = useState(false);
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const navigate = useNavigate();
-  const { name, index } = useParams();
+  const [currentPath, setCurrentPath] = useState('');
+
   // setParent(name);
-  const thisList = repoList.items[Number(index)];
-  const getChild = (name: string, type: string) => {
+
+  const getChild = (path: string, type: string) => {
     return async () => {
       if (type === "file") {
         message.error("该文件不是文件夹");
         return;
       } else {
+        setCurrentPath(path);
         setSpinning(true);
-        const data = await getRepoContents2(user.login, thisList.name, name);
+        const data = await getRepoContents2(user.login, thisList.name, path);
         if (data.length) {
           setDirs(data.filter((item: any) => item.type === "dir"));
           setFiles(data.filter((item: any) => item.type === "file"));
@@ -54,19 +58,32 @@ const RepoDeatils: React.FC = () => {
   };
   const getParent = (name: string) => {
     return async () => {
+      if (!isChild) {
+        return;
+      }
       setSpinning(true);
-      const data = await getRepoContents(user.login, thisList.name);
+      // const data = await getRepoContents(user.login, thisList.name);
+      const parts = currentPath.split("/");
+      parts.pop();
+      const parentPath = parts.join("/");
+      const data = await getRepoContents2(
+        user.login,
+        thisList.name,
+        parentPath
+      );
+      setCurrentPath(parentPath);
+      if (parentPath === "") {
+        setIsChild(false);
+      }
       if (data.length) {
         setDirs(data.filter((item: any) => item.type === "dir"));
         setFiles(data.filter((item: any) => item.type === "file"));
       } else {
         message.error("该文件夹为空");
       }
-      setIsChild(false);
       setSpinning(false);
     };
   };
-
   // 依赖项是一个空数组 [] 时 , effect 只在第一次渲染的时候执行
   useEffect(() => {
     const fetchData = async () => {
@@ -163,7 +180,7 @@ const RepoDeatils: React.FC = () => {
               </div>
               <div>
                 {Object.keys(lang).length > 0 && (
-                  <div style={{ margin: "1rem 0", fontWeight: 600 }}>
+                  <div key={lang} style={{ margin: "1rem 0", fontWeight: 600 }}>
                     项目语言
                   </div>
                 )}
@@ -187,19 +204,23 @@ const RepoDeatils: React.FC = () => {
               </div>
 
               <div className="repo-d-content-lang-names">
-                {Object.keys(lang).map((item: any, index: number) => {
-                  const len = (Number(lang[item]) / langLen) * 100;
-                  return (
-                    <div key={index} className="repo-d-content-lang-name">
-                      <span
-                        className="lang-dot"
-                        style={{ background: `${getLanguageColor(item)}` }}
-                      ></span>
-                      <span className="lang-name">{item}</span>
-                      <span className="lang-progress">{len.toFixed(2)}%</span>
-                    </div>
-                  );
-                })}
+                {lang ? (
+                  Object.keys(lang).map((item: any, index: number) => {
+                    const len = (Number(lang[item]) / langLen) * 100;
+                    return (
+                      <div key={index} className="repo-d-content-lang-name">
+                        <span
+                          className="lang-dot"
+                          style={{ background: `${getLanguageColor(item)}` }}
+                        ></span>
+                        <span className="lang-name">{item}</span>
+                        <span className="lang-progress">{len.toFixed(2)}%</span>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <></>
+                )}
               </div>
               {thisList?.description && (
                 <div>
@@ -223,51 +244,60 @@ const RepoDeatils: React.FC = () => {
             <div className="repo-d-content-list">
               <div className="repo-d-content-tip">
                 <span>文件名</span>
+                <span className="repo-d-current-path">{currentPath}</span>
                 <span>文件大小</span>
               </div>
               {isChild && (
                 <div
                   style={{ color: "#7f8c8d" }}
                   className="repo-d-content-item item-dir"
-                  onClick={getParent(thisList.name)}
+                  onClick={getParent(currentPath)}
                 >
                   <span>
                     <FolderFilled />
                   </span>
-                  <span>返回根目录</span>
+                  <span>返回上一级</span>
                 </div>
               )}
-              {dirs?.map((item: any, index: number) => {
-                return (
-                  <div
-                    key={index}
-                    className="repo-d-content-item item-dir"
-                    onClick={getChild(item.path, item.type)}
-                  >
-                    <span>
-                      <FolderFilled />
-                    </span>
-                    <span>{item.name}</span>
-                  </div>
-                );
-              })}
-              {files?.map((item: any, index: number) => {
-                return (
-                  <div
-                    key={index}
-                    className="repo-d-content-item item-file"
-                    onClick={getChild(item.name, item.type)}
-                  >
-                    <span>
-                      <span style={{ marginRight: "5px" }}>
-                        <FileOutlined />
+              {dirs ? (
+                dirs?.map((item: any, index: number) => {
+                  return (
+                    <div
+                      key={index}
+                      className="repo-d-content-item item-dir"
+                      onClick={getChild(item.path, item.type)}
+                    >
+                      <span>
+                        <FolderFilled />
                       </span>
                       <span>{item.name}</span>
-                    </span>
-                    <span>{formatFileSize(item.size)}</span>
-                  </div>
-                );
-              })}
+                    </div>
+                  );
+                })
+              ) : (
+                <></>
+              )}
+              {files ? (
+                files?.map((item: any, index: number) => {
+                  return (
+                    <div
+                      key={index}
+                      className="repo-d-content-item item-file"
+                      onClick={getChild(item.name, item.type)}
+                    >
+                      <span>
+                        <span style={{ marginRight: "5px" }}>
+                          <FileOutlined />
+                        </span>
+                        <span>{item.name}</span>
+                      </span>
+                      <span>{formatFileSize(item.size)}</span>
+                    </div>
+                  );
+                })
+              ) : (
+                <></>
+              )}
               {dirs.length === 0 && files.length === 0 && <Skeleton active />}
             </div>
           </Spin>
