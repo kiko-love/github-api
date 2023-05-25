@@ -3,11 +3,12 @@ import {
   EnvironmentOutlined,
   LinkOutlined,
   ShopOutlined,
+  MailOutlined,
 } from "@ant-design/icons";
 import "@/components/css/cardDetails.css";
 import { IUser } from "@/model/IGithub";
 
-const CardDetails: React.FC<IUser> = ({ location, blog, company }) => {
+const CardDetails: React.FC<IUser> = ({ location, blog, company,email }) => {
   return (
     <div className="vcard-details">
       {company && (
@@ -28,6 +29,14 @@ const CardDetails: React.FC<IUser> = ({ location, blog, company }) => {
           <span className="vcard-text">{blog}</span>
         </div>
       )}
+      {
+        email && (
+          <div className="vcard-item">
+            <MailOutlined />
+            <span className="vcard-text">{email}</span>
+          </div>
+        )
+      }
     </div>
   );
 };
