@@ -211,7 +211,7 @@ const RepoDeatils: React.FC = () => {
                         }}
                       ></div>
                     ) : (
-                      <></>
+                      <div key={index}></div>
                     );
                   })}
                 </div>
@@ -329,7 +329,12 @@ const RepoDeatils: React.FC = () => {
                   {fileContent.split("\n").map((line, index) => (
                     <React.Fragment key={index}>
                       <div className="repo-d-content-file-line">
-                        <span style={{ paddingRight: "1em",userSelect: 'none' }} className="repo-d-content-file-line-number">{index + 1}</span>
+                        <span
+                          style={{ paddingRight: "1em", userSelect: "none" }}
+                          className="repo-d-content-file-line-number"
+                        >
+                          {index + 1}
+                        </span>
                         {line}
                         {index < fileContent.split("\n").length - 1 && <br />}
                       </div>
