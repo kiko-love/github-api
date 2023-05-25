@@ -16,6 +16,7 @@ import { formatFileSize } from "@/utils/file";
 import { getRepoContents, getRepoLanguages, getRepoContents2 } from "@/api/api";
 import dayjs from "dayjs";
 import { getLanguageColor } from "@/utils/color";
+import { Base64 } from "js-base64";
 import "@/css/repoDetails.css";
 
 const RepoDeatils: React.FC = () => {
@@ -32,18 +33,24 @@ const RepoDeatils: React.FC = () => {
   const [files, setFiles] = useState([]);
   const [isChild, setIsChild] = useState(false);
   const [spinning, setSpinning] = useState(false);
-  const [currentPath, setCurrentPath] = useState('');
+  const [currentPath, setCurrentPath] = useState("");
+  const [fileContent, setFileContent] = useState("");
 
   // setParent(name);
 
   const getChild = (path: string, type: string) => {
     return async () => {
+      setSpinning(true);
       if (type === "file") {
-        message.error("该文件不是文件夹");
-        return;
+        // message.error("该文件不是文件夹");
+        const data = await getRepoContents2(user.login, thisList.name, path);
+        if (data.message) {
+          message.error(data.message);
+        }
+        setFileContent(Base64.decode(data.content));
       } else {
+        setFileContent("");
         setCurrentPath(path);
-        setSpinning(true);
         const data = await getRepoContents2(user.login, thisList.name, path);
         if (data.length) {
           setDirs(data.filter((item: any) => item.type === "dir"));
@@ -52,8 +59,8 @@ const RepoDeatils: React.FC = () => {
         } else {
           message.error("该文件夹为空");
         }
-        setSpinning(false);
       }
+      setSpinning(false);
     };
   };
   const getParent = (name: string) => {
@@ -61,6 +68,7 @@ const RepoDeatils: React.FC = () => {
       if (!isChild) {
         return;
       }
+      setFileContent("");
       setSpinning(true);
       // const data = await getRepoContents(user.login, thisList.name);
       const parts = currentPath.split("/");
@@ -72,6 +80,8 @@ const RepoDeatils: React.FC = () => {
         parentPath
       );
       setCurrentPath(parentPath);
+      console.log(parentPath);
+
       if (parentPath === "") {
         setIsChild(false);
       }
@@ -83,6 +93,10 @@ const RepoDeatils: React.FC = () => {
       }
       setSpinning(false);
     };
+  };
+
+  const getDirectory = () => {
+    setFileContent("");
   };
   // 依赖项是一个空数组 [] 时 , effect 只在第一次渲染的时候执行
   useEffect(() => {
@@ -240,7 +254,7 @@ const RepoDeatils: React.FC = () => {
               </span>
             </div>
           </div>
-          <Spin tip="目录加载中..." size="small" spinning={spinning}>
+          <Spin tip="加载中..." size="small" spinning={spinning}>
             <div className="repo-d-content-list">
               <div className="repo-d-content-tip">
                 <span>文件名</span>
@@ -259,7 +273,7 @@ const RepoDeatils: React.FC = () => {
                   <span>返回上一级</span>
                 </div>
               )}
-              {dirs ? (
+              {dirs && !fileContent ? (
                 dirs?.map((item: any, index: number) => {
                   return (
                     <div
@@ -277,13 +291,13 @@ const RepoDeatils: React.FC = () => {
               ) : (
                 <></>
               )}
-              {files ? (
+              {files && !fileContent ? (
                 files?.map((item: any, index: number) => {
                   return (
                     <div
                       key={index}
                       className="repo-d-content-item item-file"
-                      onClick={getChild(item.name, item.type)}
+                      onClick={getChild(item.path, item.type)}
                     >
                       <span>
                         <span style={{ marginRight: "5px" }}>
@@ -299,6 +313,30 @@ const RepoDeatils: React.FC = () => {
                 <></>
               )}
               {dirs.length === 0 && files.length === 0 && <Skeleton active />}
+              {fileContent && (
+                <div className="repo-d-content-file-back">
+                  <Button
+                    type="text"
+                    icon={<ArrowLeftOutlined />}
+                    onClick={getDirectory}
+                  >
+                    返回目录
+                  </Button>
+                </div>
+              )}
+              {fileContent && (
+                <div className="repo-d-content-file">
+                  {fileContent.split("\n").map((line, index) => (
+                    <React.Fragment key={index}>
+                      <div className="repo-d-content-file-line">
+                        <span style={{ paddingRight: "1em",userSelect: 'none' }} className="repo-d-content-file-line-number">{index + 1}</span>
+                        {line}
+                        {index < fileContent.split("\n").length - 1 && <br />}
+                      </div>
+                    </React.Fragment>
+                  ))}
+                </div>
+              )}
             </div>
           </Spin>
         </div>
