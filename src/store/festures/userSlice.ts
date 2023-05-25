@@ -42,7 +42,6 @@ export const userSlice = createSlice({
   reducers: {
     setUser: (state, { payload }) => {
       Object.assign(state, payload.user);
-      console.log("state", state.avatar_url);
     },
   },
 });

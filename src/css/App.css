@@ -27,6 +27,9 @@ body {
   color: #fff;
   font-size: 20px;
   margin-right: 4rem;
+  display: flex;
+  gap: .5rem;
+  align-items: center;
 }
 .main-content {
   height: 100%;

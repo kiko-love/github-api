@@ -10,6 +10,8 @@ import {
   StarOutlined,
   EyeOutlined,
   BranchesOutlined,
+  HomeOutlined,
+  RollbackOutlined,
 } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { formatFileSize } from "@/utils/file";
@@ -63,15 +65,16 @@ const RepoDeatils: React.FC = () => {
       setSpinning(false);
     };
   };
-  const getParent = (name: string) => {
+  const getParent = (name: string | null) => {
     return async () => {
       if (!isChild) {
         return;
       }
+      name = name || "";
       setFileContent("");
       setSpinning(true);
       // const data = await getRepoContents(user.login, thisList.name);
-      const parts = currentPath.split("/");
+      const parts = name?.split("/");
       parts.pop();
       const parentPath = parts.join("/");
       const data = await getRepoContents2(
@@ -80,8 +83,6 @@ const RepoDeatils: React.FC = () => {
         parentPath
       );
       setCurrentPath(parentPath);
-      console.log(parentPath);
-
       if (parentPath === "") {
         setIsChild(false);
       }
@@ -256,21 +257,35 @@ const RepoDeatils: React.FC = () => {
           </div>
           <Spin tip="加载中..." size="small" spinning={spinning}>
             <div className="repo-d-content-list">
-              <div className="repo-d-content-tip">
-                <span>文件名</span>
-                <span className="repo-d-current-path">{currentPath}</span>
-                <span>文件大小</span>
-              </div>
-              {isChild && (
-                <div
-                  style={{ color: "#7f8c8d" }}
-                  className="repo-d-content-item item-dir"
-                  onClick={getParent(currentPath)}
-                >
-                  <span>
-                    <FolderFilled />
-                  </span>
-                  <span>返回上一级</span>
+              {!fileContent && (
+                <div className="repo-d-content-tip">
+                  <span>文件名</span>
+                  <span className="repo-d-current-path">{currentPath}</span>
+                  <span>文件大小</span>
+                </div>
+              )}
+              {isChild && !fileContent && (
+                <div>
+                  <div
+                    style={{ color: "#7f8c8d" }}
+                    className="repo-d-content-item item-dir"
+                    onClick={getParent(null)}
+                  >
+                    <span>
+                    <HomeOutlined />
+                    </span>
+                    <span>根目录</span>
+                  </div>
+                  <div
+                    style={{ color: "#7f8c8d" }}
+                    className="repo-d-content-item item-dir"
+                    onClick={getParent(currentPath)}
+                  >
+                    <span>
+                    <RollbackOutlined />
+                    </span>
+                    <span>上一级</span>
+                  </div>
                 </div>
               )}
               {dirs && !fileContent ? (
@@ -330,7 +345,6 @@ const RepoDeatils: React.FC = () => {
                     <React.Fragment key={index}>
                       <div className="repo-d-content-file-line">
                         <span
-                          style={{ paddingRight: "1em", userSelect: "none" }}
                           className="repo-d-content-file-line-number"
                         >
                           {index + 1}

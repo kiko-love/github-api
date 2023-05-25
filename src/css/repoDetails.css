@@ -35,7 +35,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  background: #eeeeee;
+  background: #eeeeee00;
   border-radius: 5px;
   margin-bottom: 5px;
   padding: 1rem;
@@ -74,11 +74,11 @@
   justify-content: space-between;
   align-items: baseline;
   padding: 5px;
-  border-bottom: 1px solid #dedede;
+  border-bottom: 1px solid #dcdcdcc8;
 }
 .repo-d-content-info {
   padding: 1rem;
-  background: #eeeeee;
+  background: #eeeeee00;
   width: 100%;
   margin: 1rem;
   border-radius: 5px;
@@ -141,7 +141,7 @@
   align-items: center;
   gap: 1rem;
   padding: 1rem;
-  background: #eeeeee;
+  background: #eeeeee00;
   width: 100%;
   margin: 1rem;
   border-radius: 5px;
@@ -201,7 +201,10 @@
   line-height: 22px;
 }
 .repo-d-content-file-line-number{
-  color: #586069;
+  color: #adaeb0;
   font-size: 12px;
   font-weight: 600;
+  padding-right: 1rem;
+  user-select: none;
+  -webkit-user-select: none;
 }
