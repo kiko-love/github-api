@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "normalize.css";
 import { useRoutes } from "react-router-dom";
 import { Layout, Input, message, Tooltip } from "antd";
-import { InfoCircleOutlined } from "@ant-design/icons";
+import { InfoCircleOutlined, GithubOutlined } from "@ant-design/icons";
 import RouterConfig from "@/routers/index";
 import { useDispatch, useSelector } from "react-redux";
 import "@/css/App.css";
@@ -61,11 +61,7 @@ const App: React.FC = () => {
       const page = 1;
       const pageSize = pageInfo.pageSize;
       const total = user.public_repos;
-      const repoList_s = await getRepo(
-        user.login,
-        page,
-        pageInfo.pageSize
-      );
+      const repoList_s = await getRepo(user.login, page, pageInfo.pageSize);
       const repoList = repoList_s.sort(
         (
           a: { stargazers_count: any; forks_count: any; watchers_count: any },
@@ -105,7 +101,10 @@ const App: React.FC = () => {
     <Layout className="lay-out">
       <Header>
         <div className="top-header">
-          <div className="header-name">Github API</div>
+          <div className="header-name">
+            <GithubOutlined />
+            <span>Github API</span>
+          </div>
           <Search
             placeholder="搜索用户ID"
             onSearch={onSearch}
