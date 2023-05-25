@@ -1,13 +1,21 @@
-.repoList{
-    overflow: auto;
-    height: 100%;
-    position: relative;
+.repoList {
+  overflow: auto;
+  height: 100%;
+  position: relative;
 }
-.no-data{
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%,-50%);
-    font-size: 18px;
-    color: #586069;
+.no-data {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+  color: #586069;
+}
+.Pagination-footer {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border-top: 1px solid #e1e4e8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

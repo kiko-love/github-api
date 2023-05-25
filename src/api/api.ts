@@ -13,12 +13,24 @@ export const getUser = async (params: string): Promise<any> => {
 
 /**
  * @description: 获取用户仓库
- * @param params
+ * @param user
  * @returns
  */
-export const getRepo = async (params: string): Promise<any> => {
+export const getRepo = async (
+  user: string,
+  page: number,
+  per_page: number
+): Promise<any> => {
   return axiosInstance
-    .get("https://api.github.com/users/" + params + "/repos")
+    .get(
+      "https://api.github.com/users/" +
+        user +
+        "/repos" +
+        "?page=" +
+        page +
+        "&per_page=" +
+        per_page
+    )
     .then((res) => res.data);
 };
 
@@ -163,7 +175,7 @@ export const getRepoReadme = async (
   return axiosInstance
     .get("https://api.github.com/repos/" + login + "/" + repo + "/readme")
     .then((res) => res.data);
-}
+};
 
 /**
  * 获取仓库的tree
@@ -182,6 +194,4 @@ export const getRepoTree = async (
       "https://api.github.com/repos/" + login + "/" + repo + "/git/trees/" + sha
     )
     .then((res) => res.data);
-}
-
-
+};

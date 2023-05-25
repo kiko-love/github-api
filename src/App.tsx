@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "normalize.css";
 import { useRoutes } from "react-router-dom";
 import { Layout, Input, message, Tooltip } from "antd";
@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import "@/css/App.css";
 import { setUser } from "./store/festures/userSlice";
 import { setRepoList } from "./store/festures/repoListSlice";
+import { setPage } from "./store/festures/pageSlice";
 import { getUser, getRepo } from "./api/api";
 
 const App: React.FC = () => {
@@ -15,17 +16,56 @@ const App: React.FC = () => {
   const dispatch = useDispatch();
   const { Search } = Input;
   const [messageApi, contextHolder] = message.useMessage();
+  const pageInfo = useSelector((store: any) => store.page);
+  const user = useSelector((store: any) => store.user);
   // 创建一个状态来保存Search的loading状态
   const [loading, setLoading] = useState(false);
-  // const user = useSelector((store: any) => store.user);
-  // const repoList = useSelector((store: any) => store.repoList);
+  useEffect(() => {
+    const fetchData = async () => {
+      if (user.login === "") return false;
+      const repoList_s = await getRepo(
+        user.login,
+        pageInfo.page,
+        pageInfo.pageSize
+      );
+      const repoList = repoList_s.sort(
+        (
+          a: { stargazers_count: any; forks_count: any; watchers_count: any },
+          b: { stargazers_count: any; forks_count: any; watchers_count: any }
+        ) => {
+          const sumA = a.stargazers_count + a.forks_count + a.watchers_count;
+          const sumB = b.stargazers_count + b.forks_count + b.watchers_count;
+          if (sumA > sumB) {
+            return -1; // 返回负数表示a排在b前面
+          } else if (sumA < sumB) {
+            return 1; // 返回正数表示a排在b后面
+          } else {
+            return 0; // 返回0表示a和b相等
+          }
+        }
+      );
+      for (let i = 0; i < repoList.length; i++) {
+        repoList[i].index = i;
+      }
+      dispatch(setRepoList({ repoList }));
+    };
+    fetchData();
+  }, [pageInfo]);
+
+  // Search的搜索事件
   const onSearch = async (value: string) => {
     if (value === "") return false;
     setLoading(true);
     try {
       const user = await getUser(value);
-      const repoList_s = await getRepo(user.login);
-
+      const page = 1;
+      const pageSize = pageInfo.pageSize;
+      const total = user.public_repos;
+      const repoList_s = await getRepo(
+        user.login,
+        page,
+        pageInfo.pageSize
+      );
       const repoList = repoList_s.sort(
         (
           a: { stargazers_count: any; forks_count: any; watchers_count: any },
@@ -49,13 +89,14 @@ const App: React.FC = () => {
       Promise.all([
         dispatch(setUser({ user })),
         dispatch(setRepoList({ repoList })),
+        dispatch(setPage({ page, pageSize, total })),
       ]);
       messageApi.open({
         type: "success",
         content: "搜索成功",
       });
     } catch (error: any) {
-      message.error(error.message+'：未找到该用户');
+      message.error(error.message + "：未找到该用户");
     } finally {
       setLoading(false);
     }
