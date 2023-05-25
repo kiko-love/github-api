@@ -53,7 +53,7 @@ export const getRepoContents = async (
 };
 
 /**
- * 获取用户仓库的二级目录
+ * 获取用户仓库的子目录
  * @param login
  * @param repo
  * @param path
@@ -164,4 +164,24 @@ export const getRepoReadme = async (
     .get("https://api.github.com/repos/" + login + "/" + repo + "/readme")
     .then((res) => res.data);
 }
+
+/**
+ * 获取仓库的tree
+ * @param login
+ * @param repo
+ * @param sha
+ * @returns
+ */
+export const getRepoTree = async (
+  login: string,
+  repo: string,
+  sha: string
+): Promise<any> => {
+  return axiosInstance
+    .get(
+      "https://api.github.com/repos/" + login + "/" + repo + "/git/trees/" + sha
+    )
+    .then((res) => res.data);
+}
+
 
