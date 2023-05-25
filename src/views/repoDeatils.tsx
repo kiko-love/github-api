@@ -12,6 +12,7 @@ import {
   BranchesOutlined,
   HomeOutlined,
   RollbackOutlined,
+  CopyOutlined,
 } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { formatFileSize } from "@/utils/file";
@@ -98,6 +99,12 @@ const RepoDeatils: React.FC = () => {
 
   const getDirectory = () => {
     setFileContent("");
+  };
+
+  const copyFileContent = () => { 
+    navigator.clipboard.writeText(fileContent).then(() => {
+      message.success("复制成功");
+    });
   };
   // 依赖项是一个空数组 [] 时 , effect 只在第一次渲染的时候执行
   useEffect(() => {
@@ -336,6 +343,13 @@ const RepoDeatils: React.FC = () => {
                     onClick={getDirectory}
                   >
                     返回目录
+                  </Button>
+                  <Button
+                    type="text"
+                    icon={<CopyOutlined />}
+                    onClick={copyFileContent}
+                  >
+                    复制
                   </Button>
                 </div>
               )}
