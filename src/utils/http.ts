@@ -16,10 +16,11 @@ export interface IResponse {
 let axiosInstance: AxiosInstance = axios.create({
   baseURL: process.env.REACT_APP_BASE_URL,
   headers: {
-    Accept: "application/json",
+    Accept: "application/vnd.github.v3+json",
     "Content-Type": "application/x-www-form-urlencoded",
     // eslint-disable-next-line no-useless-concat
-    "Authorization":"token "+"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"
+    "Authorization":"Bearer "+"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",
+    'X-GitHub-Api-Version': '2022-11-28',
   },
   transformRequest: [
     function (data) {
