@@ -16,7 +16,7 @@ import {
 } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { formatFileSize } from "@/utils/file";
-import { getRepoContents, getRepoLanguages, getRepoContents2 } from "@/api/api";
+import { getRepoContents, getRepoLanguages, getRepoContents2,getDownloadRaw } from "@/api/api";
 import dayjs from "dayjs";
 import { getLanguageColor } from "@/utils/color";
 import { Base64 } from "js-base64";
@@ -46,7 +46,7 @@ const RepoDeatils: React.FC = () => {
       setSpinning(true);
       if (type === "file") {
         // message.error("该文件不是文件夹");
-        const data = await getRepoContents2(user.login, thisList.name, path);
+        const data = await getRepoContents2(user.login, thisList.name, path);        
         if (data.message) {
           message.error(data.message);
         }
