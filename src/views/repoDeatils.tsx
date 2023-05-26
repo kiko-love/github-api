@@ -16,7 +16,7 @@ import {
 } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { formatFileSize } from "@/utils/file";
-import { getRepoContents, getRepoLanguages, getRepoContents2,getDownloadRaw } from "@/api/api";
+import { getRepoContents, getRepoLanguages, getRepoContents2 } from "@/api/api";
 import dayjs from "dayjs";
 import { getLanguageColor } from "@/utils/color";
 import { Base64 } from "js-base64";
@@ -39,8 +39,7 @@ const RepoDeatils: React.FC = () => {
   const [currentPath, setCurrentPath] = useState("");
   const [fileContent, setFileContent] = useState("");
 
-  // setParent(name);
-
+  // 获取子目录或文件内容
   const getChild = (path: string, type: string) => {
     return async () => {
       setSpinning(true);
@@ -66,6 +65,7 @@ const RepoDeatils: React.FC = () => {
       setSpinning(false);
     };
   };
+  // 返回根目录或获取上级目录
   const getParent = (name: string | null) => {
     return async () => {
       if (!isChild) {
@@ -363,7 +363,7 @@ const RepoDeatils: React.FC = () => {
                         >
                           {index + 1}
                         </span>
-                        {line}
+                        <span className="repo-d-content-file-line-content">{line}</span>
                         {index < fileContent.split("\n").length - 1 && <br />}
                       </div>
                     </React.Fragment>

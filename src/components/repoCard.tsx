@@ -20,7 +20,7 @@ const repoCard: React.FC = (prpos: any) => {
   };
   return (
     <div className="repoCard">
-      <div>
+      <div className="repoCard-left">
         <div className="repoCard-header">
           <div className="repoCard-name">{prpos.name}</div>
           <div className="repoCard-private">

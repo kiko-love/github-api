@@ -1,83 +1,89 @@
-.repoCard{
-    display: flex;
-    /* flex-direction: column; */
-    justify-content: space-between;
-    padding: 1rem 2rem;
-    border: 1px solid #e1e4e8;
-    box-shadow: 0 1px 6px rgba(0,0,0,0.04);
-    margin: 1rem;
-    border-radius: 5px;
-    /* cursor: pointer; */
-    transition: all 0.15s ease-in-out;
+.repoCard {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem 2rem;
+  border: 1px solid #e1e4e8;
+  margin: 1rem 2rem;
+  border-radius: 5px;
+  background: #fff;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.15s ease-in-out;
+  min-height: 100px;
 }
 .repoCard:hover {
-    transition: all 0.15s ease-in-out;
-    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.16);
+  /* transform: translateY(-5px); */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
-.repoCard-header{
-    display: flex;
-    width: 100%;
-    align-items: center;
-    margin-bottom: 8px;
+.repoCard-left {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+.repoCard-header {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  margin-bottom: 8px;
+  margin-right: 6px;
 }
 .repoCard-name {
-    font-size: 20px;
-    font-weight: 600;
-    color: #0366d6;
-    margin-right: .5rem;
+  font-size: 20px;
+  font-weight: 600;
+  color: #0366d6;
+  margin-right: 0.5rem;
 }
-.repoCard-description{
-    font-size: 14px;
-    color: #6b7178;
-    margin-bottom: 1rem;
-    margin-right: 1rem;
-    line-height: 22px;
+.repoCard-description {
+  font-size: 14px;
+  color: #6b7178;
+  margin-bottom: 1rem;
+  margin-right: 1rem;
+  line-height: 22px;
 }
-.language-dot{
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    display: inline-block;
-    margin-right: 4px;
-    background: #b75c5c;
+.language-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 4px;
+  background: #b75c5c;
 }
-.repoCard-language{
-    font-size: 12px;
-    color: #586069;
-    margin-right: 8px;
-    font-weight: 600;
+.repoCard-language {
+  font-size: 12px;
+  color: #586069;
+  margin-right: 8px;
+  font-weight: 600;
 }
-.repoCard-footer{
-    display: flex;
-    align-items: center;
-    margin-top: 8px;
-    font-size: 12px;
-    color: #586069;
-    gap: 1rem;
+.repoCard-footer {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+  font-size: 12px;
+  color: #586069;
+  gap: 1rem;
 }
-.repoCard-license{
-    display: flex;
-    align-items: center;
-    gap: 4px;
+.repoCard-license {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
-.repoCard-date{
-    display: flex;
-    align-items: center;
-    gap: 4px;
+.repoCard-date {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
-.repoCard-count{
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    color: #586069;
+.repoCard-count {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: #586069;
 }
-.count-item{
-    display: flex;
-    align-items: center;
-    gap: 2px;
+.count-item {
+  display: flex;
+  align-items: center;
+  gap: 2px;
 }
-.repoCard-action{
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+.repoCard-action {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }

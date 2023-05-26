@@ -10,6 +10,7 @@ body {
 /* 修改滚动条样式 */
 ::-webkit-scrollbar {
   width: 6px; /* 滚动条宽度 */
+  height: 6px; /* 滚动条高度 */
   background-color: #dddddd; /* 滚动条背景色 */
 }
 
