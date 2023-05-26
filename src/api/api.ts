@@ -12,7 +12,7 @@ export const getUser = async (params: string): Promise<any> => {
 };
 
 /**
- * @description: 获取用户仓库
+ * @description: 获取用户仓库列表
  * @param user
  * @returns
  */
