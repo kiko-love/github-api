@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import MDEditor from "@uiw/react-md-editor";
 
 import { useNavigate, useParams } from "react-router-dom";
-import { Button, Skeleton, message, Spin } from "antd";
+import { Button, Skeleton, message, Spin, Anchor, FloatButton } from "antd";
 import {
   ArrowLeftOutlined,
   CodeOutlined,
@@ -15,7 +15,7 @@ import {
   HomeOutlined,
   RollbackOutlined,
   CopyOutlined,
-  UnorderedListOutlined,
+  ReadOutlined,
 } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { formatFileSize } from "@/utils/file";
@@ -24,6 +24,7 @@ import {
   getRepoLanguages,
   getRepoContents2,
   getRepoReadme,
+  getRepoDetail,
 } from "@/api/api";
 import dayjs from "dayjs";
 import { getLanguageColor } from "@/utils/color";
@@ -37,6 +38,7 @@ const RepoDeatils: React.FC = () => {
   const repoList = useSelector((store: any) => store.repoList);
   const { name, index } = useParams();
   const thisList = repoList.items[Number(index)];
+
   const [data, setData] = useState([]);
   const [lang, setLang] = useState<any>({});
   const [langLen, setLangLen] = useState(0);
@@ -47,6 +49,7 @@ const RepoDeatils: React.FC = () => {
   const [currentPath, setCurrentPath] = useState("");
   const [fileContent, setFileContent] = useState("");
   const [value, setValue] = React.useState("");
+  const [deatil, setDeatil] = useState<any>({}); // 仓库详情
 
   // 获取子目录或文件内容
   const getChild = (path: string, type: string) => {
@@ -119,16 +122,18 @@ const RepoDeatils: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (user.login && name) {
-        const [data, lang, readme] = await Promise.all([
+        const [data, lang, readme,gdetail] = await Promise.all([
           getRepoContents(user.login, name as string),
           getRepoLanguages(user.login, name as string),
           getRepoReadme(user.login, name as string),
+          getRepoDetail(user.login, name as string),
         ]);
         let langLen = 0;
         for (let i in lang) {
           // eslint-disable-next-line react-hooks/exhaustive-deps
           langLen += lang[i];
         }
+        setDeatil(gdetail);
         setValue(Base64.decode(readme.content));
         setLangLen(langLen);
         setLang(lang);
@@ -155,18 +160,59 @@ const RepoDeatils: React.FC = () => {
         >
           返回仓库列表
         </Button>
-        <div className="repo-d-title">{thisList?.full_name}</div>
+        <div className="repo-d-title">
+          {thisList?.full_name}{" "}
+          <span style={{fontSize:'14px',color:'#666666',marginRight:'5px'}}>{thisList?.fork ? "forked from" : ""}</span>
+          <span style={{fontSize:'14px',color:'#666666'}}>{thisList?.fork ? deatil?.parent?.full_name : ""}</span>
+        </div>
         <div></div>
       </div>
+      <Anchor
+        style={{ display: "none" }}
+        bounds={5}
+        offsetTop={120}
+        items={[
+          {
+            key: "main",
+            href: "#main",
+            title: <ProjectOutlined />,
+          },
+          {
+            key: "code",
+            href: "#code",
+            title: <CodeOutlined />,
+          },
+          {
+            key: "readme",
+            href: "#readme",
+            title: <ReadOutlined />,
+          },
+        ]}
+      />
+
       <div>
         <div className="repo-d-content">
-          <div className="repo-d-content-header repo-d-content-card">
+          <div id="main" className="repo-d-content-header repo-d-content-card">
             <span className="repo-d-tip">
               <ProjectOutlined />
-              {name}
+              {name} <span>{thisList?.fork}</span>
             </span>
             <div className="repo-d-content-info">
               <div className="repo-d-content-grid">
+                {thisList?.homepage && (
+                  <div>
+                    <span style={{ marginRight: "8px" }}>项目主页</span>
+                    <span style={{ color: "#7a7a7a" }}>
+                      <a href={thisList?.homepage}>{thisList?.homepage}</a>
+                    </span>
+                  </div>
+                )}
+                <div>
+                  <span style={{ marginRight: "8px" }}>开源协议</span>
+                  <span style={{ color: "#7a7a7a" }}>
+                    {thisList?.license?.name}
+                  </span>
+                </div>
                 <div>
                   <span style={{ marginRight: "8px" }}>仓库创建日期</span>
                   <span style={{ color: "#7a7a7a" }}>
@@ -267,8 +313,8 @@ const RepoDeatils: React.FC = () => {
               )}
             </div>
           </div>
-          
-          <div className="repo-d-content-card">
+
+          <div id="code" className="repo-d-content-card">
             <div className="repo-d-content-header-name">
               <span className="repo-d-tip">
                 <CodeOutlined />
@@ -386,19 +432,37 @@ const RepoDeatils: React.FC = () => {
               </div>
             </Spin>
           </div>
-          <div className="repo-d-content-card">
+          <div id="readme" className="repo-d-content-card">
             <div className="repo-d-readme">
-              <UnorderedListOutlined />
+              <ReadOutlined />
               README.md
             </div>
             <MDEditor.Markdown
-            className="repo-d-content-markdown"
+              className="repo-d-content-markdown"
               source={value}
             />
             {!value && <Skeleton active />}
           </div>
         </div>
       </div>
+      <FloatButton.Group shape="circle" style={{ right: 24 }}>
+        <FloatButton
+          icon={<ProjectOutlined />}
+          href={"#main"}
+          tooltip={<div>{name}</div>}
+        />
+        <FloatButton
+          icon={<CodeOutlined />}
+          href={"#code"}
+          tooltip={<div>Code</div>}
+        />
+        <FloatButton
+          icon={<ReadOutlined />}
+          href={"#readme"}
+          tooltip={<div>README.md</div>}
+        />
+        <FloatButton.BackTop />
+      </FloatButton.Group>
     </div>
   );
 };

@@ -83,6 +83,13 @@
   gap: 1rem;
   margin-bottom: 1rem;
 }
+.repo-d-content-grid a {
+  color: #0366d6;
+  font-weight: 600;
+}
+.repo-d-content-grid a:hover {
+  text-decoration: underline;
+}
 .repo-d-content-lang {
   width: 100%;
   height: 8px;
