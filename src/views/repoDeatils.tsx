@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import MDEditor from "@uiw/react-md-editor";
+
 import { useNavigate, useParams } from "react-router-dom";
 import { Button, Skeleton, message, Spin } from "antd";
 import {
@@ -13,10 +15,16 @@ import {
   HomeOutlined,
   RollbackOutlined,
   CopyOutlined,
+  UnorderedListOutlined,
 } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { formatFileSize } from "@/utils/file";
-import { getRepoContents, getRepoLanguages, getRepoContents2 } from "@/api/api";
+import {
+  getRepoContents,
+  getRepoLanguages,
+  getRepoContents2,
+  getRepoReadme,
+} from "@/api/api";
 import dayjs from "dayjs";
 import { getLanguageColor } from "@/utils/color";
 import { Base64 } from "js-base64";
@@ -38,6 +46,7 @@ const RepoDeatils: React.FC = () => {
   const [spinning, setSpinning] = useState(false);
   const [currentPath, setCurrentPath] = useState("");
   const [fileContent, setFileContent] = useState("");
+  const [value, setValue] = React.useState("");
 
   // 获取子目录或文件内容
   const getChild = (path: string, type: string) => {
@@ -45,7 +54,7 @@ const RepoDeatils: React.FC = () => {
       setSpinning(true);
       if (type === "file") {
         // message.error("该文件不是文件夹");
-        const data = await getRepoContents2(user.login, thisList.name, path);        
+        const data = await getRepoContents2(user.login, thisList.name, path);
         if (data.message) {
           message.error(data.message);
         }
@@ -101,7 +110,7 @@ const RepoDeatils: React.FC = () => {
     setFileContent("");
   };
 
-  const copyFileContent = () => { 
+  const copyFileContent = () => {
     navigator.clipboard.writeText(fileContent).then(() => {
       message.success("复制成功");
     });
@@ -110,15 +119,17 @@ const RepoDeatils: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (user.login && name) {
-        const [data, lang] = await Promise.all([
+        const [data, lang, readme] = await Promise.all([
           getRepoContents(user.login, name as string),
           getRepoLanguages(user.login, name as string),
+          getRepoReadme(user.login, name as string),
         ]);
         let langLen = 0;
         for (let i in lang) {
           // eslint-disable-next-line react-hooks/exhaustive-deps
           langLen += lang[i];
         }
+        setValue(Base64.decode(readme.content));
         setLangLen(langLen);
         setLang(lang);
         setData(data);
@@ -149,7 +160,7 @@ const RepoDeatils: React.FC = () => {
       </div>
       <div>
         <div className="repo-d-content">
-          <div className="repo-d-content-header">
+          <div className="repo-d-content-header repo-d-content-card">
             <span className="repo-d-tip">
               <ProjectOutlined />
               {name}
@@ -255,123 +266,137 @@ const RepoDeatils: React.FC = () => {
                 </div>
               )}
             </div>
+          </div>
+          
+          <div className="repo-d-content-card">
             <div className="repo-d-content-header-name">
               <span className="repo-d-tip">
                 <CodeOutlined />
                 Code
               </span>
             </div>
-          </div>
-          <Spin tip="加载中..." size="small" spinning={spinning}>
-            <div className="repo-d-content-list">
-              {!fileContent && (
-                <div className="repo-d-content-tip">
-                  <span>文件名</span>
-                  <span className="repo-d-current-path">{currentPath}</span>
-                  <span>文件大小</span>
-                </div>
-              )}
-              {isChild && !fileContent && (
-                <div>
-                  <div
-                    style={{ color: "#7f8c8d" }}
-                    className="repo-d-content-item item-dir"
-                    onClick={getParent(null)}
-                  >
-                    <span>
-                    <HomeOutlined />
-                    </span>
-                    <span>根目录</span>
+            <Spin tip="加载中..." size="small" spinning={spinning}>
+              <div className="repo-d-content-list">
+                {!fileContent && (
+                  <div className="repo-d-content-tip">
+                    <span>文件名</span>
+                    <span className="repo-d-current-path">{currentPath}</span>
+                    <span>文件大小</span>
                   </div>
-                  <div
-                    style={{ color: "#7f8c8d" }}
-                    className="repo-d-content-item item-dir"
-                    onClick={getParent(currentPath)}
-                  >
-                    <span>
-                    <RollbackOutlined />
-                    </span>
-                    <span>上一级</span>
-                  </div>
-                </div>
-              )}
-              {dirs && !fileContent ? (
-                dirs?.map((item: any, index: number) => {
-                  return (
+                )}
+                {isChild && !fileContent && (
+                  <div>
                     <div
-                      key={index}
+                      style={{ color: "#7f8c8d" }}
                       className="repo-d-content-item item-dir"
-                      onClick={getChild(item.path, item.type)}
+                      onClick={getParent(null)}
                     >
                       <span>
-                        <FolderFilled />
+                        <HomeOutlined />
                       </span>
-                      <span>{item.name}</span>
+                      <span>根目录</span>
                     </div>
-                  );
-                })
-              ) : (
-                <></>
-              )}
-              {files && !fileContent ? (
-                files?.map((item: any, index: number) => {
-                  return (
                     <div
-                      key={index}
-                      className="repo-d-content-item item-file"
-                      onClick={getChild(item.path, item.type)}
+                      style={{ color: "#7f8c8d" }}
+                      className="repo-d-content-item item-dir"
+                      onClick={getParent(currentPath)}
                     >
                       <span>
-                        <span style={{ marginRight: "5px" }}>
-                          <FileOutlined />
+                        <RollbackOutlined />
+                      </span>
+                      <span>上一级</span>
+                    </div>
+                  </div>
+                )}
+                {dirs && !fileContent ? (
+                  dirs?.map((item: any, index: number) => {
+                    return (
+                      <div
+                        key={index}
+                        className="repo-d-content-item item-dir"
+                        onClick={getChild(item.path, item.type)}
+                      >
+                        <span>
+                          <FolderFilled />
                         </span>
                         <span>{item.name}</span>
-                      </span>
-                      <span>{formatFileSize(item.size)}</span>
-                    </div>
-                  );
-                })
-              ) : (
-                <></>
-              )}
-              {dirs.length === 0 && files.length === 0 && <Skeleton active />}
-              {fileContent && (
-                <div className="repo-d-content-file-back">
-                  <Button
-                    type="text"
-                    icon={<ArrowLeftOutlined />}
-                    onClick={getDirectory}
-                  >
-                    返回目录
-                  </Button>
-                  <Button
-                    type="text"
-                    icon={<CopyOutlined />}
-                    onClick={copyFileContent}
-                  >
-                    复制
-                  </Button>
-                </div>
-              )}
-              {fileContent && (
-                <div className="repo-d-content-file">
-                  {fileContent.split("\n").map((line, index) => (
-                    <React.Fragment key={index}>
-                      <div className="repo-d-content-file-line">
-                        <span
-                          className="repo-d-content-file-line-number"
-                        >
-                          {index + 1}
-                        </span>
-                        <span className="repo-d-content-file-line-content">{line}</span>
-                        {index < fileContent.split("\n").length - 1 && <br />}
                       </div>
-                    </React.Fragment>
-                  ))}
-                </div>
-              )}
+                    );
+                  })
+                ) : (
+                  <></>
+                )}
+                {files && !fileContent ? (
+                  files?.map((item: any, index: number) => {
+                    return (
+                      <div
+                        key={index}
+                        className="repo-d-content-item item-file"
+                        onClick={getChild(item.path, item.type)}
+                      >
+                        <span>
+                          <span style={{ marginRight: "5px" }}>
+                            <FileOutlined />
+                          </span>
+                          <span>{item.name}</span>
+                        </span>
+                        <span>{formatFileSize(item.size)}</span>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <></>
+                )}
+                {dirs.length === 0 && files.length === 0 && <Skeleton active />}
+                {fileContent && (
+                  <div className="repo-d-content-file-back">
+                    <Button
+                      type="text"
+                      icon={<ArrowLeftOutlined />}
+                      onClick={getDirectory}
+                    >
+                      返回目录
+                    </Button>
+                    <Button
+                      type="text"
+                      icon={<CopyOutlined />}
+                      onClick={copyFileContent}
+                    >
+                      复制
+                    </Button>
+                  </div>
+                )}
+                {fileContent && (
+                  <div className="repo-d-content-file">
+                    {fileContent.split("\n").map((line, index) => (
+                      <React.Fragment key={index}>
+                        <div className="repo-d-content-file-line">
+                          <span className="repo-d-content-file-line-number">
+                            {index + 1}
+                          </span>
+                          <span className="repo-d-content-file-line-content">
+                            {line}
+                          </span>
+                          {index < fileContent.split("\n").length - 1 && <br />}
+                        </div>
+                      </React.Fragment>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </Spin>
+          </div>
+          <div className="repo-d-content-card">
+            <div className="repo-d-readme">
+              <UnorderedListOutlined />
+              README.md
             </div>
-          </Spin>
+            <MDEditor.Markdown
+            className="repo-d-content-markdown"
+              source={value}
+            />
+            {!value && <Skeleton active />}
+          </div>
         </div>
       </div>
     </div>
