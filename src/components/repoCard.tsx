@@ -24,13 +24,9 @@ const repoCard: React.FC = (prpos: any) => {
         <div className="repoCard-header">
           <div className="repoCard-name">{prpos.name}</div>
           <div className="repoCard-private">
-            {prpos.private ? (
+            {prpos.visibility && (
               <span>
-                <Tag>private</Tag>
-              </span>
-            ) : (
-              <span>
-                <Tag color="green">public</Tag>
+                <Tag color="green">{prpos.visibility}</Tag>
               </span>
             )}
           </div>
