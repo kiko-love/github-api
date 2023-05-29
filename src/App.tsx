@@ -47,6 +47,13 @@ const App: React.FC = () => {
       for (let i = 0; i < repoList.length; i++) {
         repoList[i].index = i;
       }
+      const payload = {
+        page:null,
+        pageSize:null,
+        total:null,
+        loading:false
+      }
+      await dispatch(setPage(payload))     
       dispatch(setRepoList({ repoList }));
     };
     fetchData();
