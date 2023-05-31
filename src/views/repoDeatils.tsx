@@ -299,16 +299,20 @@ const RepoDeatils: React.FC = () => {
                         const len = (Number(lang[item]) / langLen) * 100;
                         return (
                           <div key={index} className="repo-d-content-lang-name">
-                            <span
-                              className="lang-dot"
-                              style={{
-                                background: `${getLanguageColor(item)}`,
-                              }}
-                            ></span>
-                            <span className="lang-name">{item}</span>
-                            <span className="lang-progress">
-                              {len.toFixed(2)}%
-                            </span>
+                            {len.toFixed(2) !== "0.00" && (
+                              <>
+                                <span
+                                  className="lang-dot"
+                                  style={{
+                                    background: `${getLanguageColor(item)}`,
+                                  }}
+                                ></span>
+                                <span className="lang-name">{item}</span>
+                                <span className="lang-progress">
+                                  {len.toFixed(2)}%
+                                </span>
+                              </>
+                            )}
                           </div>
                         );
                       })
