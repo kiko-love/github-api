@@ -22,7 +22,7 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
-      if (user.login === "") return false;
+      if (user.login === "" || loading) return false;
       const repoList_s = await getRepo(
         user.login,
         pageInfo.page,
