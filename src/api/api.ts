@@ -136,10 +136,15 @@ export const getRepoBranches = async (
  */
 export const getRepoCommits = async (
   login: string,
-  repo: string
+  repo: string,
+  branch: string
 ): Promise<any> => {
   return axiosInstance
-    .get("https://api.github.com/repos/" + login + "/" + repo + "/commits")
+    .get(
+      "https://api.github.com/repos/" + login + "/" + repo + "/commits" + (branch
+        ? "/" + branch
+        : "")
+    )
     .then((res) => res.data);
 };
 
@@ -192,6 +197,26 @@ export const getRepoTree = async (
   return axiosInstance
     .get(
       "https://api.github.com/repos/" + login + "/" + repo + "/git/trees/" + sha
+    )
+    .then((res) => res.data);
+};
+
+/**
+ * 获取仓库的blob
+ * @param login
+ * @param repo
+ * @param sha
+ * @returns
+ *
+ */
+export const getRepoBlob = async (
+  login: string,
+  repo: string,
+  sha: string
+): Promise<any> => {
+  return axiosInstance
+    .get(
+      "https://api.github.com/repos/" + login + "/" + repo + "/git/blobs/" + sha
     )
     .then((res) => res.data);
 };

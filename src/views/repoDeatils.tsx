@@ -2,7 +2,15 @@ import React, { useState, useEffect } from "react";
 import MDEditor from "@uiw/react-md-editor";
 import { formatNumber } from "@/utils/numberFormat";
 import { useNavigate, useParams } from "react-router-dom";
-import { Button, Skeleton, message, Spin, Anchor, FloatButton } from "antd";
+import {
+  Button,
+  Skeleton,
+  message,
+  Spin,
+  Anchor,
+  FloatButton,
+  Timeline,
+} from "antd";
 import {
   ArrowLeftOutlined,
   CodeOutlined,
@@ -16,6 +24,7 @@ import {
   RollbackOutlined,
   CopyOutlined,
   ReadOutlined,
+  HistoryOutlined,
 } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { formatFileSize } from "@/utils/file";
@@ -25,10 +34,12 @@ import {
   getRepoContents2,
   getRepoReadme,
   getRepoDetail,
+  getRepoCommits,
 } from "@/api/api";
 import dayjs from "dayjs";
 import { getLanguageColor } from "@/utils/color";
 import { Base64 } from "js-base64";
+import RepoTimeline from "@/components/repoTimeline";
 import "@/css/repoDetails.css";
 
 const RepoDeatils: React.FC = () => {
@@ -50,6 +61,7 @@ const RepoDeatils: React.FC = () => {
   const [fileContent, setFileContent] = useState("");
   const [value, setValue] = React.useState("");
   const [deatil, setDeatil] = useState<any>({}); // 仓库详情
+  const [commitsList, setCommitsList] = useState<any>(null); // 仓库提交记录
 
   // 获取子目录或文件内容
   const getChild = (path: string, type: string) => {
@@ -113,6 +125,32 @@ const RepoDeatils: React.FC = () => {
     setFileContent("");
   };
 
+  const clearCommitList = () => {
+    setCommitsList(null);
+  };
+
+  const getCommitsList = async (branch?: string) => {
+    setSpinning(true);
+    branch = branch ? branch : "";
+    try {
+      const commits = await getRepoCommits(user.login, name as string, branch);
+      const commitsByDate: any = {};
+      commits.forEach((commit: any) => {
+        const date = dayjs(commit.commit?.committer?.date).format("YYYY/MM/DD");
+        commit.date = date;
+        if (!commitsByDate[date]) {
+          commitsByDate[date] = [];
+        }
+        commitsByDate[date].push(commit);
+        setCommitsList(commitsByDate);
+        console.log(commitsByDate);
+      });
+    } catch (error: any) {
+      message.error(error.message);
+    }
+
+    setSpinning(false);
+  };
   const copyFileContent = () => {
     navigator.clipboard.writeText(fileContent).then(() => {
       message.success("复制成功");
@@ -133,6 +171,7 @@ const RepoDeatils: React.FC = () => {
           // eslint-disable-next-line react-hooks/exhaustive-deps
           langLen += lang[i];
         }
+
         setDeatil(gdetail);
         setValue(Base64.decode(readme.content));
         setLangLen(langLen);
@@ -211,16 +250,26 @@ const RepoDeatils: React.FC = () => {
                       <div>
                         <span style={{ marginRight: "8px" }}>项目主页</span>
                         <span style={{ color: "#7a7a7a" }}>
-                          <a href={thisList?.homepage}>{thisList?.homepage}</a>
+                          <a
+                            href={thisList?.homepage}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {thisList?.homepage}
+                          </a>
                         </span>
                       </div>
                     )}
-                    <div>
-                      <span style={{ marginRight: "8px" }}>开源协议</span>
-                      <span style={{ color: "#7a7a7a" }}>
-                        {thisList?.license?.name}
-                      </span>
-                    </div>
+                    {thisList?.license && (
+                      <React.Fragment>
+                        <div>
+                          <span style={{ marginRight: "8px" }}>开源协议</span>
+                          <span style={{ color: "#7a7a7a" }}>
+                            {thisList?.license?.name}
+                          </span>
+                        </div>
+                      </React.Fragment>
+                    )}
                     <div>
                       <span style={{ marginRight: "8px" }}>仓库创建日期</span>
                       <span style={{ color: "#7a7a7a" }}>
@@ -342,116 +391,147 @@ const RepoDeatils: React.FC = () => {
                 <CodeOutlined />
                 Code
               </span>
+              <span className="repo-d-commits">
+                {commitsList && (
+                  <Button
+                    type="text"
+                    icon={<RollbackOutlined />}
+                    onClick={() => {
+                      clearCommitList();
+                    }}
+                  ></Button>
+                )}
+                <Button
+                  type="text"
+                  icon={<HistoryOutlined />}
+                  onClick={() => {
+                    getCommitsList();
+                  }}
+                >
+                  commits
+                </Button>
+              </span>
             </div>
             <Spin tip="加载中..." size="small" spinning={spinning}>
-              <div className="repo-d-content-list">
-                {!fileContent && (
-                  <div className="repo-d-content-tip">
-                    <span>文件名</span>
-                    <span className="repo-d-current-path">{currentPath}</span>
-                    <span>文件大小</span>
-                  </div>
-                )}
-                {isChild && !fileContent && (
-                  <div>
-                    <div
-                      style={{ color: "#7f8c8d" }}
-                      className="repo-d-content-item item-dir"
-                      onClick={getParent(null)}
-                    >
-                      <span>
-                        <HomeOutlined />
-                      </span>
-                      <span>根目录</span>
+              {!commitsList && (
+                <div className="repo-d-content-list">
+                  {!fileContent && (
+                    <div className="repo-d-content-tip">
+                      <span>文件名</span>
+                      <span className="repo-d-current-path">{currentPath}</span>
+                      <span>文件大小</span>
                     </div>
-                    <div
-                      style={{ color: "#7f8c8d" }}
-                      className="repo-d-content-item item-dir"
-                      onClick={getParent(currentPath)}
-                    >
-                      <span>
-                        <RollbackOutlined />
-                      </span>
-                      <span>上一级</span>
-                    </div>
-                  </div>
-                )}
-                {dirs && !fileContent ? (
-                  dirs?.map((item: any, index: number) => {
-                    return (
+                  )}
+                  {isChild && !fileContent && (
+                    <div>
                       <div
-                        key={index}
+                        style={{ color: "#7f8c8d" }}
                         className="repo-d-content-item item-dir"
-                        onClick={getChild(item.path, item.type)}
+                        onClick={getParent(null)}
                       >
                         <span>
-                          <FolderFilled />
+                          <HomeOutlined />
                         </span>
-                        <span>{item.name}</span>
+                        <span>根目录</span>
                       </div>
-                    );
-                  })
-                ) : (
-                  <></>
-                )}
-                {files && !fileContent ? (
-                  files?.map((item: any, index: number) => {
-                    return (
                       <div
-                        key={index}
-                        className="repo-d-content-item item-file"
-                        onClick={getChild(item.path, item.type)}
+                        style={{ color: "#7f8c8d" }}
+                        className="repo-d-content-item item-dir"
+                        onClick={getParent(currentPath)}
                       >
                         <span>
-                          <span style={{ marginRight: "5px" }}>
-                            <FileOutlined />
+                          <RollbackOutlined />
+                        </span>
+                        <span>上一级</span>
+                      </div>
+                    </div>
+                  )}
+                  {dirs && !fileContent ? (
+                    dirs?.map((item: any, index: number) => {
+                      return (
+                        <div
+                          key={index}
+                          className="repo-d-content-item item-dir"
+                          onClick={getChild(item.path, item.type)}
+                        >
+                          <span>
+                            <FolderFilled />
                           </span>
                           <span>{item.name}</span>
-                        </span>
-                        <span>{formatFileSize(item.size)}</span>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <></>
-                )}
-                {dirs.length === 0 && files.length === 0 && <Skeleton active />}
-                {fileContent && (
-                  <div className="repo-d-content-file-back">
-                    <Button
-                      type="text"
-                      icon={<ArrowLeftOutlined />}
-                      onClick={getDirectory}
-                    >
-                      返回目录
-                    </Button>
-                    <Button
-                      type="text"
-                      icon={<CopyOutlined />}
-                      onClick={copyFileContent}
-                    >
-                      复制
-                    </Button>
-                  </div>
-                )}
-                {fileContent && (
-                  <div className="repo-d-content-file">
-                    {fileContent.split("\n").map((line, index) => (
-                      <React.Fragment key={index}>
-                        <div className="repo-d-content-file-line">
-                          <span className="repo-d-content-file-line-number">
-                            {index + 1}
-                          </span>
-                          <span className="repo-d-content-file-line-content">
-                            {line}
-                          </span>
-                          {index < fileContent.split("\n").length - 1 && <br />}
                         </div>
-                      </React.Fragment>
-                    ))}
-                  </div>
-                )}
-              </div>
+                      );
+                    })
+                  ) : (
+                    <></>
+                  )}
+                  {files && !fileContent ? (
+                    files?.map((item: any, index: number) => {
+                      return (
+                        <div
+                          key={index}
+                          className="repo-d-content-item item-file"
+                          onClick={getChild(item.path, item.type)}
+                        >
+                          <span>
+                            <span style={{ marginRight: "5px" }}>
+                              <FileOutlined />
+                            </span>
+                            <span>{item.name}</span>
+                          </span>
+                          <span>{formatFileSize(item.size)}</span>
+                        </div>
+                      );
+                    })
+                  ) : (
+                    <></>
+                  )}
+                  {dirs.length === 0 && files.length === 0 && (
+                    <Skeleton active />
+                  )}
+                  {fileContent && (
+                    <div className="repo-d-content-file-back">
+                      <Button
+                        type="text"
+                        icon={<ArrowLeftOutlined />}
+                        onClick={getDirectory}
+                      >
+                        返回目录
+                      </Button>
+                      <Button
+                        type="text"
+                        icon={<CopyOutlined />}
+                        onClick={copyFileContent}
+                      >
+                        复制
+                      </Button>
+                    </div>
+                  )}
+                  {fileContent && (
+                    <div className="repo-d-content-file">
+                      {fileContent.split("\n").map((line, index) => (
+                        <React.Fragment key={index}>
+                          <div className="repo-d-content-file-line">
+                            <span className="repo-d-content-file-line-number">
+                              {index + 1}
+                            </span>
+                            <span className="repo-d-content-file-line-content">
+                              {line}
+                            </span>
+                            {index < fileContent.split("\n").length - 1 && (
+                              <br />
+                            )}
+                          </div>
+                        </React.Fragment>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+              {commitsList && (
+                <div>
+                  <RepoTimeline {...commitsList} />
+                </div>
+              )}
             </Spin>
           </div>
           <div id="readme" className="repo-d-content-card">

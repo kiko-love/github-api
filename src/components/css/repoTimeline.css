@@ -1,0 +1,61 @@
+.repo-tl {
+  display: flex;
+  position: relative;
+}
+.repo-tl::before {
+  background-color: hsla(210, 18%, 87%, 1);
+  bottom: 0;
+  content: "";
+  display: block;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 2px;
+}
+.repo-tl-icon {
+  background-color: #fff;
+  border: 0;
+  height: 16px;
+  margin-bottom: 8px;
+  margin-top: 8px;
+  margin-left: -5px;
+  z-index: 9;
+}
+.repo-tl-body {
+  display: flex;
+  flex-direction: column;
+  margin-top: 8px;
+  margin-bottom: 12px;
+}
+.repo-tl-commit-date {
+  font-size: 16px;
+  color: #757575;
+  margin-left: 1rem;
+  margin-bottom: 8px;
+}
+.repo-tl-commit-main {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-left: 16px;
+}
+.repo-tl-commit-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  background: #ffffff;
+  width: 100%;
+  border-radius: 5px;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+}
+.repo-tl-commit-msg {
+  font-size: 14px;
+  color: #1f2328;
+  font-weight: 600;
+}
+.repo-tl-commit-author{
+    display: flex;
+    gap: .5rem;
+    font-size: 12px;
+}
