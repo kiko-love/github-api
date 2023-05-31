@@ -74,8 +74,8 @@ const App: React.FC = () => {
           a: { stargazers_count: any; forks_count: any; watchers_count: any },
           b: { stargazers_count: any; forks_count: any; watchers_count: any }
         ) => {
-          const sumA = a.stargazers_count + a.forks_count + a.watchers_count;
-          const sumB = b.stargazers_count + b.forks_count + b.watchers_count;
+          const sumA = a.stargazers_count + a.forks_count*2 + a.watchers_count;
+          const sumB = b.stargazers_count + b.forks_count*2 + b.watchers_count;
           if (sumA > sumB) {
             return -1; // 返回负数表示a排在b前面
           } else if (sumA < sumB) {

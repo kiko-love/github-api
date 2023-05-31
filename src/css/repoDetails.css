@@ -11,8 +11,8 @@
   padding: 0.5rem 1rem;
   margin-right: 6px;
   border-bottom: 1px solid #e1e4e8;
-  background: rgba(255, 255, 255, 0.5);
-  backdrop-filter: blur(10px);
+  backdrop-filter: saturate(50%) blur(8px);
+  background: rgba(255,255,255,.7);
 }
 .repo-d-title {
   font-size: 20px;

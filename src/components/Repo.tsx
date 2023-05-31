@@ -52,6 +52,8 @@ export default function Repo() {
           pageSize={pageSize}
           current={current}
           responsive={true}
+          showTotal={(total) => `共 ${total} 条`}
+          showSizeChanger={false}
           hideOnSinglePage={true}
           itemRender={(page, type, originalElement) => {
             return originalElement;

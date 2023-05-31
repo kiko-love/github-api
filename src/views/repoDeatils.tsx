@@ -162,8 +162,8 @@ const RepoDeatils: React.FC = () => {
         </Button>
         <div className="repo-d-title">
           {thisList?.full_name}{" "}
-          <span style={{fontSize:'14px',color:'#666666',marginRight:'5px'}}>{thisList?.fork ? "forked from" : ""}</span>
-          <span style={{fontSize:'14px',color:'#666666'}}>{thisList?.fork ? deatil?.parent?.full_name : ""}</span>
+          <span style={{fontSize:'12px',color:'#8c8c8c',marginRight:'5px'}}>{thisList?.fork ? "forked from" : ""}</span>
+          <span style={{fontSize:'12px',color:'#8c8c8c'}}>{thisList?.fork ? deatil?.parent?.full_name : ""}</span>
         </div>
         <div></div>
       </div>
