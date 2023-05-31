@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import MDEditor from "@uiw/react-md-editor";
-
+import { formatNumber } from "@/utils/numberFormat";
 import { useNavigate, useParams } from "react-router-dom";
 import { Button, Skeleton, message, Spin, Anchor, FloatButton } from "antd";
 import {
@@ -40,7 +40,7 @@ const RepoDeatils: React.FC = () => {
   const thisList = repoList.items[Number(index)];
 
   const [data, setData] = useState([]);
-  const [lang, setLang] = useState<any>({});
+  const [lang, setLang] = useState<any>(null);
   const [langLen, setLangLen] = useState(0);
   const [dirs, setDirs] = useState([]);
   const [files, setFiles] = useState([]);
@@ -122,7 +122,7 @@ const RepoDeatils: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       if (user.login && name) {
-        const [data, lang, readme,gdetail] = await Promise.all([
+        const [data, lang, readme, gdetail] = await Promise.all([
           getRepoContents(user.login, name as string),
           getRepoLanguages(user.login, name as string),
           getRepoReadme(user.login, name as string),
@@ -162,8 +162,14 @@ const RepoDeatils: React.FC = () => {
         </Button>
         <div className="repo-d-title">
           {thisList?.full_name}{" "}
-          <span style={{fontSize:'12px',color:'#8c8c8c',marginRight:'5px'}}>{thisList?.fork ? "forked from" : ""}</span>
-          <span style={{fontSize:'12px',color:'#8c8c8c'}}>{thisList?.fork ? deatil?.parent?.full_name : ""}</span>
+          <span
+            style={{ fontSize: "12px", color: "#8c8c8c", marginRight: "5px" }}
+          >
+            {thisList?.fork ? "forked from" : ""}
+          </span>
+          <span style={{ fontSize: "12px", color: "#8c8c8c" }}>
+            {thisList?.fork ? deatil?.parent?.full_name : ""}
+          </span>
         </div>
         <div></div>
       </div>
@@ -193,125 +199,137 @@ const RepoDeatils: React.FC = () => {
       <div>
         <div className="repo-d-content">
           <div id="main" className="repo-d-content-header repo-d-content-card">
-            <span className="repo-d-tip">
-              <ProjectOutlined />
-              {name} <span>{thisList?.fork}</span>
-            </span>
-            <div className="repo-d-content-info">
-              <div className="repo-d-content-grid">
-                {thisList?.homepage && (
-                  <div>
-                    <span style={{ marginRight: "8px" }}>项目主页</span>
-                    <span style={{ color: "#7a7a7a" }}>
-                      <a href={thisList?.homepage}>{thisList?.homepage}</a>
-                    </span>
-                  </div>
-                )}
-                <div>
-                  <span style={{ marginRight: "8px" }}>开源协议</span>
-                  <span style={{ color: "#7a7a7a" }}>
-                    {thisList?.license?.name}
-                  </span>
-                </div>
-                <div>
-                  <span style={{ marginRight: "8px" }}>仓库创建日期</span>
-                  <span style={{ color: "#7a7a7a" }}>
-                    {thisList
-                      ? dayjs(thisList?.created_at).format(
-                          "YYYY年MM月DD日 hh:mm"
-                        )
-                      : "--"}
-                  </span>
-                </div>
-                <div>
-                  <span style={{ marginRight: "8px" }}>上次提交日期</span>
-                  <span style={{ color: "#7a7a7a" }}>
-                    {thisList
-                      ? dayjs(thisList?.pushed_at).format(
-                          "YYYY年MM月DD日 hh:mm"
-                        )
-                      : "--"}
-                  </span>
-                </div>
-              </div>
-              <div className="repo-d-content-counts">
-                <div className="repo-d-content-count">
-                  <div className="count-tip">
-                    <StarOutlined />
-                    <span>{thisList?.stargazers_count}</span>
-                  </div>
-                  <span className="count-unit">star</span>
-                </div>
-                <div className="repo-d-content-count">
-                  <div className="count-tip">
-                    <EyeOutlined />
-                    <span>{thisList?.watchers_count}</span>
-                  </div>
-                  <span className="count-unit">watching</span>
-                </div>
-                <div className="repo-d-content-count">
-                  <div className="count-tip">
-                    <BranchesOutlined />
-                    <span>{thisList?.forks_count}</span>
-                  </div>
-                  <span className="count-unit">forks</span>
-                </div>
-              </div>
-              <div>
-                {Object.keys(lang).length > 0 && (
-                  <div key={lang} style={{ margin: "1rem 0", fontWeight: 600 }}>
-                    项目语言
-                  </div>
-                )}
-                <div className="repo-d-content-lang">
-                  {Object.keys(lang).map((item: any, index: number) => {
-                    const len = (Number(lang[item]) / langLen) * 100;
-                    return len > 1 ? (
-                      <div
-                        key={index}
-                        className="repo-d-content-lang-item"
-                        style={{
-                          width: `${len}%`,
-                          background: `${getLanguageColor(item)}`,
-                        }}
-                      ></div>
-                    ) : (
-                      <div key={index}></div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div className="repo-d-content-lang-names">
-                {lang ? (
-                  Object.keys(lang).map((item: any, index: number) => {
-                    const len = (Number(lang[item]) / langLen) * 100;
-                    return (
-                      <div key={index} className="repo-d-content-lang-name">
-                        <span
-                          className="lang-dot"
-                          style={{ background: `${getLanguageColor(item)}` }}
-                        ></span>
-                        <span className="lang-name">{item}</span>
-                        <span className="lang-progress">{len.toFixed(2)}%</span>
+            {lang && (
+              <>
+                <span className="repo-d-tip">
+                  <ProjectOutlined />
+                  {name} <span>{thisList?.fork}</span>
+                </span>
+                <div className="repo-d-content-info">
+                  <div className="repo-d-content-grid">
+                    {thisList?.homepage && (
+                      <div>
+                        <span style={{ marginRight: "8px" }}>项目主页</span>
+                        <span style={{ color: "#7a7a7a" }}>
+                          <a href={thisList?.homepage}>{thisList?.homepage}</a>
+                        </span>
                       </div>
-                    );
-                  })
-                ) : (
-                  <></>
-                )}
-              </div>
-              {thisList?.description && (
-                <div>
-                  <div style={{ margin: "1rem 0", fontWeight: 600 }}>
-                    项目介绍
+                    )}
+                    <div>
+                      <span style={{ marginRight: "8px" }}>开源协议</span>
+                      <span style={{ color: "#7a7a7a" }}>
+                        {thisList?.license?.name}
+                      </span>
+                    </div>
+                    <div>
+                      <span style={{ marginRight: "8px" }}>仓库创建日期</span>
+                      <span style={{ color: "#7a7a7a" }}>
+                        {thisList
+                          ? dayjs(thisList?.created_at).format(
+                              "YYYY年MM月DD日 hh:mm"
+                            )
+                          : "--"}
+                      </span>
+                    </div>
+                    <div>
+                      <span style={{ marginRight: "8px" }}>上次提交日期</span>
+                      <span style={{ color: "#7a7a7a" }}>
+                        {thisList
+                          ? dayjs(thisList?.pushed_at).format(
+                              "YYYY年MM月DD日 hh:mm"
+                            )
+                          : "--"}
+                      </span>
+                    </div>
                   </div>
-                  <div style={{ color: "#586069" }} className="content-des">
-                    {thisList?.description}
+                  <div className="repo-d-content-counts">
+                    <div className="repo-d-content-count">
+                      <div className="count-tip">
+                        <StarOutlined />
+                        <span>{formatNumber(thisList?.stargazers_count)}</span>
+                      </div>
+                      <span className="count-unit">star</span>
+                    </div>
+                    <div className="repo-d-content-count">
+                      <div className="count-tip">
+                        <EyeOutlined />
+                        <span>{formatNumber(thisList?.watchers_count)}</span>
+                      </div>
+                      <span className="count-unit">watching</span>
+                    </div>
+                    <div className="repo-d-content-count">
+                      <div className="count-tip">
+                        <BranchesOutlined />
+                        <span>{formatNumber(thisList?.forks_count)}</span>
+                      </div>
+                      <span className="count-unit">forks</span>
+                    </div>
                   </div>
+                  <div>
+                    {Object.keys(lang).length > 0 && (
+                      <div
+                        key={lang}
+                        style={{ margin: "1rem 0", fontWeight: 600 }}
+                      >
+                        项目语言
+                      </div>
+                    )}
+                    <div className="repo-d-content-lang">
+                      {Object.keys(lang).map((item: any, index: number) => {
+                        const len = (Number(lang[item]) / langLen) * 100;
+                        return len > 1 ? (
+                          <div
+                            key={index}
+                            className="repo-d-content-lang-item"
+                            style={{
+                              width: `${len}%`,
+                              background: `${getLanguageColor(item)}`,
+                            }}
+                          ></div>
+                        ) : (
+                          <div key={index}></div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  <div className="repo-d-content-lang-names">
+                    {lang ? (
+                      Object.keys(lang).map((item: any, index: number) => {
+                        const len = (Number(lang[item]) / langLen) * 100;
+                        return (
+                          <div key={index} className="repo-d-content-lang-name">
+                            <span
+                              className="lang-dot"
+                              style={{
+                                background: `${getLanguageColor(item)}`,
+                              }}
+                            ></span>
+                            <span className="lang-name">{item}</span>
+                            <span className="lang-progress">
+                              {len.toFixed(2)}%
+                            </span>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <></>
+                    )}
+                  </div>
+                  {thisList?.description && (
+                    <div>
+                      <div style={{ margin: "1rem 0", fontWeight: 600 }}>
+                        项目介绍
+                      </div>
+                      <div style={{ color: "#586069" }} className="content-des">
+                        {thisList?.description}
+                      </div>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
+              </>
+            )}
+            {!lang && <Skeleton active />}
           </div>
 
           <div id="code" className="repo-d-content-card">

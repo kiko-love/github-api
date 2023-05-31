@@ -11,6 +11,7 @@ import {
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
+import {formatNumber} from "@/utils/numberFormat";
 
 const repoCard: React.FC = (prpos: any) => {
   // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -22,11 +23,11 @@ const repoCard: React.FC = (prpos: any) => {
     <div className="repoCard">
       <div className="repoCard-left">
         <div className="repoCard-header">
-          <div className="repoCard-name">{prpos.name}</div>
+          <div className="repoCard-name">{prpos?.name}</div>
           <div className="repoCard-private">
-            {prpos.visibility && (
+            {prpos?.visibility && (
               <span>
-                <Tag color="green">{prpos.visibility}</Tag>
+                <Tag color="green">{prpos?.visibility}</Tag>
               </span>
             )}
           </div>
@@ -34,42 +35,42 @@ const repoCard: React.FC = (prpos: any) => {
             {prpos.stargazers_count > 0 && (
               <span className="count-item">
                 <StarOutlined />
-                {prpos.stargazers_count}
+                {formatNumber(prpos?.stargazers_count)}
               </span>
             )}
-            {prpos.forks_count > 0 && (
+            {prpos?.forks_count > 0 && (
               <span className="count-item">
                 <BranchesOutlined />
-                {prpos.forks_count}
+                {formatNumber(prpos?.forks_count)}
               </span>
             )}
           </div>
         </div>
         <div>
-          <div className="repoCard-description">{prpos.description}</div>
+          <div className="repoCard-description">{prpos?.description}</div>
         </div>
         <div className="repoCard-footer">
           {prpos.language && (
             <div className="repoCard-language">
               <span
                 className="language-dot"
-                style={{ background: `${getLanguageColor(prpos.language)}` }}
+                style={{ background: `${getLanguageColor(prpos?.language)}` }}
               ></span>
-              <span>{prpos.language}</span>
+              <span>{prpos?.language}</span>
             </div>
           )}
 
           {prpos.license && (
             <div className="repoCard-license">
               <DeploymentUnitOutlined />
-              <span>{prpos.license?.name}</span>
+              <span>{prpos?.license?.name}</span>
             </div>
           )}
           {
             <div className="repoCard-date">
               <HistoryOutlined />
               {/* <span>创建日期</span> */}
-              <span>{dayjs(prpos.created_at).format("YYYY年MM月DD日")}</span>
+              <span>{dayjs(prpos?.created_at).format("YYYY年MM月DD日")}</span>
             </div>
           }
         </div>
@@ -81,7 +82,7 @@ const repoCard: React.FC = (prpos: any) => {
             shape="circle"
             icon={<RightOutlined />}
             onClick={() => {
-              toDeatil(prpos.name, prpos.index);
+              toDeatil(prpos?.name, prpos?.index);
             }}
           />
         </Tooltip>
