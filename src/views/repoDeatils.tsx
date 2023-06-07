@@ -143,7 +143,6 @@ const RepoDeatils: React.FC = () => {
         }
         commitsByDate[date].push(commit);
         setCommitsList(commitsByDate);
-        console.log(commitsByDate);
       });
     } catch (error: any) {
       message.error(error.message);

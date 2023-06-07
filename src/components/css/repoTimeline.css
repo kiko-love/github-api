@@ -26,12 +26,13 @@
   flex-direction: column;
   margin-top: 8px;
   margin-bottom: 12px;
+  width: 100%;
 }
 .repo-tl-commit-date {
-  font-size: 16px;
+  font-size: 14px;
   color: #757575;
   margin-left: 1rem;
-  margin-bottom: 8px;
+  margin-bottom: 1rem;
 }
 .repo-tl-commit-main {
   display: flex;
@@ -42,7 +43,7 @@
 .repo-tl-commit-info {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: .5rem;
   padding: 1rem;
   background: #ffffff;
   width: 100%;
@@ -53,9 +54,22 @@
   font-size: 14px;
   color: #1f2328;
   font-weight: 600;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.repo-tl-commit-cmsg{
+  display: flex;
+  flex-direction: column;
+}
+.repo-tl-commit-extramsg{
+  font-size: 12px;
+  color: #757575;
+  margin-top: .5rem;
 }
 .repo-tl-commit-author{
     display: flex;
     gap: .5rem;
     font-size: 12px;
+    align-items: center;
 }
