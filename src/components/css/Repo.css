@@ -19,3 +19,9 @@
   justify-content: center;
   align-items: center;
 }
+.repoList-skeleton{
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 2rem;
+}

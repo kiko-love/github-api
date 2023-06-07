@@ -16,7 +16,7 @@ export const getLanguageColor = (language: string): string => {
     "C++": "#f34b7d",
     "C": "#555555",
     "Shell": "#89e051",
-    "TypeScript": "#2b7489",
+    "TypeScript": "#3178c6",
     "Swift": "#ffac45",
     "Objective-C": "#438eff",
     "Go": "#00add8",

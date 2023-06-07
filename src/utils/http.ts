@@ -19,7 +19,7 @@ let axiosInstance: AxiosInstance = axios.create({
     Accept: "application/vnd.github.v3+json",
     "Content-Type": "application/x-www-form-urlencoded",
     // eslint-disable-next-line no-useless-concat
-    "Authorization":"Bearer "+"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",
+    "Authorization":"Bearer "+localStorage.getItem('GTOKEN'),
     'X-GitHub-Api-Version': '2022-11-28',
   },
   transformRequest: [

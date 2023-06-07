@@ -22,7 +22,7 @@ const App: React.FC = () => {
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
-      if (user.login === "") return false;
+      if (user.login === "" || loading) return false;
       const repoList_s = await getRepo(
         user.login,
         pageInfo.page,
@@ -47,6 +47,13 @@ const App: React.FC = () => {
       for (let i = 0; i < repoList.length; i++) {
         repoList[i].index = i;
       }
+      const payload = {
+        page:null,
+        pageSize:null,
+        total:null,
+        loading:false
+      }
+      await dispatch(setPage(payload))     
       dispatch(setRepoList({ repoList }));
     };
     fetchData();
@@ -67,8 +74,8 @@ const App: React.FC = () => {
           a: { stargazers_count: any; forks_count: any; watchers_count: any },
           b: { stargazers_count: any; forks_count: any; watchers_count: any }
         ) => {
-          const sumA = a.stargazers_count + a.forks_count + a.watchers_count;
-          const sumB = b.stargazers_count + b.forks_count + b.watchers_count;
+          const sumA = a.stargazers_count + a.forks_count*2 + a.watchers_count;
+          const sumB = b.stargazers_count + b.forks_count*2 + b.watchers_count;
           if (sumA > sumB) {
             return -1; // 返回负数表示a排在b前面
           } else if (sumA < sumB) {

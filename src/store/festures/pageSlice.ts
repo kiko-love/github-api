@@ -2,8 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   page: 1,
-  pageSize: 10,
+  pageSize: 30,
   total: 0,
+  loading: false,
 };
 
 export const pageSlice: any = createSlice({
@@ -14,6 +15,7 @@ export const pageSlice: any = createSlice({
       state.page = payload.page ? payload.page : state.page;
       state.pageSize = payload.pageSize ? payload.pageSize : state.pageSize;
       state.total = payload.total ? payload.total : state.total;
+      state.loading = payload.loading;
     },
   },
 });
